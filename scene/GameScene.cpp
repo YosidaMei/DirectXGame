@@ -2,8 +2,7 @@
 #include "TextureManager.h"
 #include <cassert>
 #include "ImGuiManager.h"
-#include "PrimitiveDrawer.h"
-#include "AxisIndicator.h"
+
 
 GameScene::GameScene() {}
 
