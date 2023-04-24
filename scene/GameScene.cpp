@@ -7,6 +7,8 @@
 GameScene::GameScene() {}
 
 GameScene::~GameScene() { 
+	delete model_;
+	delete player_;
 }
 
 void GameScene::Initialize() {
@@ -14,11 +16,18 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
-	
+	textureHandle_ = TextureManager::Load("AL3kabi.png");
+	// 3Dモデル
+	model_ = Model::Create();
+	worldTransform_.Initialize();
+	viewProjection_.Initialize();
+	// 自キャラの生成
+	player_ = new Player();
+	player_->Initialize(model_, textureHandle_);
 }
 
 void GameScene::Update() { 
-
+	player_->Update();
 }
 
 void GameScene::Draw() {
@@ -51,6 +60,8 @@ void GameScene::Draw() {
 	/// </summary>
 	
 	//3Dモデル描画
+	// 自キャラの描画
+	player_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
