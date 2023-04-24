@@ -10,7 +10,6 @@
 #include "WorldTransform.h"
 #include "Player.h"
 
-
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -56,6 +55,8 @@ private: // メンバ変数
 
 	//自キャラ
 	Player* player_ = nullptr;
+	/*
+	*/
 
 	/// <summary>
 	/// ゲームシーン用

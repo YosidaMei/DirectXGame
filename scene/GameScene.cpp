@@ -9,6 +9,8 @@ GameScene::GameScene() {}
 GameScene::~GameScene() { 
 	delete model_;
 	delete player_;
+	/*
+	*/
 }
 
 void GameScene::Initialize() {
@@ -16,7 +18,6 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
-	
 	textureHandle_ = TextureManager::Load("AL3kabi.png");
 	//3Dモデル
 	model_ = Model::Create();
@@ -25,10 +26,13 @@ void GameScene::Initialize() {
 	//自キャラの生成
 	player_ = new Player();
 	player_->Initialize(model_,textureHandle_);
+	/*
+	*/
 
 }
 
 void GameScene::Update() { 
+
 	player_->Update();
 
 }
