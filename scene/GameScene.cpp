@@ -2,13 +2,14 @@
 #include "TextureManager.h"
 #include <cassert>
 #include "ImGuiManager.h"
-
+#include "AxisIndicator.h"
 
 GameScene::GameScene() {}
 
 GameScene::~GameScene() { 
 	delete model_;
 	delete player_;
+	delete debugCamera_;
 }
 
 void GameScene::Initialize() {
@@ -24,10 +25,36 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_);
+	//デバッグカメラ
+	debugCamera_ = new DebugCamera(1280, 720);
+
+	AxisIndicator::GetInstance()->SetVisible(true);
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+
+
 }
 
 void GameScene::Update() { 
 	player_->Update();
+	debugCamera_->Update();
+#ifdef DEBUG
+#endif // DEBUG
+	if (input_->TriggerKey(DIK_F)) {
+		if (isDebugCameraActive_ != true) {
+			isDebugCameraActive_ = true;
+		} else {
+			isDebugCameraActive_ = false;
+		}
+	}
+	if (isDebugCameraActive_) {
+		debugCamera_->Update();
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		viewProjection_.TransferMatrix();
+	} else {
+		viewProjection_.UpdateMatrix();
+	}
+
 }
 
 void GameScene::Draw() {

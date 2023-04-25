@@ -3,6 +3,7 @@
 #include "WorldTransform.h"
 #include "Model.h"
 #include "Input.h"
+#include "Matrix.h"
 
 class Player {
 public:
@@ -25,6 +26,9 @@ public:
 	uint32_t m_textureHandle_ = 0u;
 
 	Model* model_ = nullptr;
+
+	//キーボード入力
+	Input* input_ = nullptr;
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;

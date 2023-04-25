@@ -1,0 +1,193 @@
+#include "Matrix.h"
+#include <assert.h>
+
+// ２次元ベクトルを同次座標に変換
+Vector3 Transform(Vector3 vector, Matrix4x4 matrix) {
+	Vector3 result;
+	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] +
+	           1.0f * matrix.m[3][0];
+	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] +
+	           1.0f * matrix.m[3][1];
+	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] +
+	           1.0f * matrix.m[3][2];
+	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] +
+	          1.0f * matrix.m[3][3];
+	assert(w != 0.0f);
+	result.x /= w;
+	result.y /= w;
+	result.z /= w;
+	return result;
+}
+
+// 平行移動行列
+Matrix4x4 MakeTranslateMatrix(Vector3 translate) { // translateに入る値は移動量
+	Matrix4x4 mul;
+	mul.m[0][0] = 1;
+	mul.m[0][1] = 0;
+	mul.m[0][2] = 0;
+	mul.m[0][3] = 0;
+	mul.m[1][0] = 0;
+	mul.m[1][1] = 1;
+	mul.m[1][2] = 0;
+	mul.m[1][3] = 0;
+	mul.m[2][0] = 0;
+	mul.m[2][1] = 0;
+	mul.m[2][2] = 1;
+	mul.m[2][3] = 0;
+	mul.m[3][0] = translate.x;
+	mul.m[3][1] = translate.y;
+	mul.m[3][2] = translate.z;
+	mul.m[3][3] = 1;
+
+	return mul;
+}
+
+// 拡大縮小行列
+Matrix4x4 MakeScaleMatrix(Vector3 scale) {
+	Matrix4x4 mul;
+	mul.m[0][0] = scale.x;
+	mul.m[0][1] = 0;
+	mul.m[0][2] = 0;
+	mul.m[0][3] = 0;
+	mul.m[1][0] = 0;
+	mul.m[1][1] = scale.y;
+	mul.m[1][2] = 0;
+	mul.m[1][3] = 0;
+	mul.m[2][0] = 0;
+	mul.m[2][1] = 0;
+	mul.m[2][2] = scale.z;
+	mul.m[2][3] = 0;
+	mul.m[3][0] = 0;
+	mul.m[3][1] = 0;
+	mul.m[3][2] = 0;
+	mul.m[3][3] = 1;
+
+	return mul;
+}
+
+// 回転行列
+// Z
+Matrix4x4 MakeRotateZMatrix(float radian) {
+	Matrix4x4 rotate;
+
+	rotate.m[0][0] = std::cos(radian);
+	rotate.m[0][1] = std::sin(radian);
+	rotate.m[0][2] = 0;
+	rotate.m[0][3] = 0;
+	rotate.m[1][0] = -std::sin(radian);
+	rotate.m[1][1] = std::cos(radian);
+	rotate.m[1][2] = 0;
+	rotate.m[1][3] = 0;
+	rotate.m[2][0] = 0;
+	rotate.m[2][1] = 0;
+	rotate.m[2][2] = 1;
+	rotate.m[2][3] = 0;
+	rotate.m[3][0] = 0;
+	rotate.m[3][1] = 0;
+	rotate.m[3][2] = 0;
+	rotate.m[3][3] = 1;
+
+	return rotate;
+}
+// X
+Matrix4x4 MakeRotateXMatrix(float radian) {
+	Matrix4x4 rotate;
+
+	rotate.m[0][0] = 1;
+	rotate.m[0][1] = 0;
+	rotate.m[0][2] = 0;
+	rotate.m[0][3] = 0;
+	rotate.m[1][0] = 0;
+	rotate.m[1][1] = std::cos(radian);
+	rotate.m[1][2] = std::sin(radian);
+	rotate.m[1][3] = 0;
+	rotate.m[2][0] = 0;
+	rotate.m[2][1] = -std::sin(radian);
+	rotate.m[2][2] = std::cos(radian);
+	rotate.m[2][3] = 0;
+	rotate.m[3][0] = 0;
+	rotate.m[3][1] = 0;
+	rotate.m[3][2] = 0;
+	rotate.m[3][3] = 1;
+
+	return rotate;
+}
+// Y
+Matrix4x4 MakeRotateYMatrix(float radian) {
+	Matrix4x4 rotate;
+
+	rotate.m[0][0] = std::cos(radian);
+	rotate.m[0][1] = 0;
+	rotate.m[0][2] = -std::sin(radian);
+	rotate.m[0][3] = 0;
+	rotate.m[1][0] = 0;
+	rotate.m[1][1] = 1;
+	rotate.m[1][2] = 0;
+	rotate.m[1][3] = 0;
+	rotate.m[2][0] = std::sin(radian);
+	rotate.m[2][1] = 0;
+	rotate.m[2][2] = std::cos(radian);
+	rotate.m[2][3] = 0;
+	rotate.m[3][0] = 0;
+	rotate.m[3][1] = 0;
+	rotate.m[3][2] = 0;
+	rotate.m[3][3] = 1;
+
+	return rotate;
+}
+
+// 積
+Matrix4x4 Multiply(Matrix4x4 matrix1, Matrix4x4 matrix2) {
+	Matrix4x4 Multiply;
+	Multiply.m[0][0] = (matrix1.m[0][0] * matrix2.m[0][0]) + (matrix1.m[0][1] * matrix2.m[1][0]) +
+	                   (matrix1.m[0][2] * matrix2.m[2][0]) + (matrix1.m[0][3] * matrix2.m[3][0]);
+	Multiply.m[0][1] = (matrix1.m[0][0] * matrix2.m[0][1]) + (matrix1.m[0][1] * matrix2.m[1][1]) +
+	                   (matrix1.m[0][2] * matrix2.m[2][1]) + (matrix1.m[0][3] * matrix2.m[3][1]);
+	Multiply.m[0][2] = (matrix1.m[0][0] * matrix2.m[0][2]) + (matrix1.m[0][1] * matrix2.m[1][2]) +
+	                   (matrix1.m[0][2] * matrix2.m[2][2]) + (matrix1.m[0][3] * matrix2.m[3][2]);
+	Multiply.m[0][3] = (matrix1.m[0][0] * matrix2.m[0][3]) + (matrix1.m[0][1] * matrix2.m[1][3]) +
+	                   (matrix1.m[0][2] * matrix2.m[2][3]) + (matrix1.m[0][3] * matrix2.m[3][3]);
+
+	Multiply.m[1][0] = (matrix1.m[1][0] * matrix2.m[0][0]) + (matrix1.m[1][1] * matrix2.m[1][0]) +
+	                   (matrix1.m[1][2] * matrix2.m[2][0]) + (matrix1.m[1][3] * matrix2.m[3][0]);
+	Multiply.m[1][1] = (matrix1.m[1][0] * matrix2.m[0][1]) + (matrix1.m[1][1] * matrix2.m[1][1]) +
+	                   (matrix1.m[1][2] * matrix2.m[2][1]) + (matrix1.m[1][3] * matrix2.m[3][1]);
+	Multiply.m[1][2] = (matrix1.m[1][0] * matrix2.m[0][2]) + (matrix1.m[1][1] * matrix2.m[1][2]) +
+	                   (matrix1.m[1][2] * matrix2.m[2][2]) + (matrix1.m[1][3] * matrix2.m[3][2]);
+	Multiply.m[1][3] = (matrix1.m[1][0] * matrix2.m[0][3]) + (matrix1.m[1][1] * matrix2.m[1][3]) +
+	                   (matrix1.m[1][2] * matrix2.m[2][3]) + (matrix1.m[1][3] * matrix2.m[3][3]);
+
+	Multiply.m[2][0] = (matrix1.m[2][0] * matrix2.m[0][0]) + (matrix1.m[2][1] * matrix2.m[1][0]) +
+	                   (matrix1.m[2][2] * matrix2.m[2][0]) + (matrix1.m[2][3] * matrix2.m[3][0]);
+	Multiply.m[2][1] = (matrix1.m[2][0] * matrix2.m[0][1]) + (matrix1.m[2][1] * matrix2.m[1][1]) +
+	                   (matrix1.m[2][2] * matrix2.m[2][1]) + (matrix1.m[2][3] * matrix2.m[3][1]);
+	Multiply.m[2][2] = (matrix1.m[2][0] * matrix2.m[0][2]) + (matrix1.m[2][1] * matrix2.m[1][2]) +
+	                   (matrix1.m[2][2] * matrix2.m[2][2]) + (matrix1.m[2][3] * matrix2.m[3][2]);
+	Multiply.m[2][3] = (matrix1.m[2][0] * matrix2.m[0][3]) + (matrix1.m[2][1] * matrix2.m[1][3]) +
+	                   (matrix1.m[2][2] * matrix2.m[2][3]) + (matrix1.m[2][3] * matrix2.m[3][3]);
+
+	Multiply.m[3][0] = (matrix1.m[3][0] * matrix2.m[0][0]) + (matrix1.m[3][1] * matrix2.m[1][0]) +
+	                   (matrix1.m[3][2] * matrix2.m[2][0]) + (matrix1.m[3][3] * matrix2.m[3][0]);
+	Multiply.m[3][1] = (matrix1.m[3][0] * matrix2.m[0][1]) + (matrix1.m[3][1] * matrix2.m[1][1]) +
+	                   (matrix1.m[3][2] * matrix2.m[2][1]) + (matrix1.m[3][3] * matrix2.m[3][1]);
+	Multiply.m[3][2] = (matrix1.m[3][0] * matrix2.m[0][2]) + (matrix1.m[3][1] * matrix2.m[1][2]) +
+	                   (matrix1.m[3][2] * matrix2.m[2][2]) + (matrix1.m[3][3] * matrix2.m[3][2]);
+	Multiply.m[3][3] = (matrix1.m[3][0] * matrix2.m[0][3]) + (matrix1.m[3][1] * matrix2.m[1][3]) +
+	                   (matrix1.m[3][2] * matrix2.m[2][3]) + (matrix1.m[3][3] * matrix2.m[3][3]);
+
+	return Multiply;
+}
+
+//アフィン変換
+Matrix4x4 MakeAffineMatrix(Vector3 scale, Vector3 theta, Vector3 translate) {
+	Matrix4x4 ScaleMatrix = MakeScaleMatrix(scale);
+	Matrix4x4 RotateMatrix = Multiply(
+	    MakeRotateXMatrix(theta.x),
+	    Multiply(MakeRotateYMatrix(theta.y), MakeRotateZMatrix(theta.z)));
+	Matrix4x4 TranslateMatrix = MakeTranslateMatrix(translate);
+
+	Matrix4x4 SR_Matrix = Multiply(ScaleMatrix, RotateMatrix);
+	Matrix4x4 SRT_Matrix = Multiply(SR_Matrix, TranslateMatrix);
+
+	return SRT_Matrix;
+}
