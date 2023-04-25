@@ -54,7 +54,7 @@ void GameScene::Update() {
 	} else {
 		viewProjection_.UpdateMatrix();
 	}
-	player_->Rotate();
+	
 }
 
 

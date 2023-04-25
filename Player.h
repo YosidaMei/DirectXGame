@@ -16,7 +16,7 @@ public:
 	/// 毎フレーム処理
 	/// </summary>
 	void Update();
-	void Rotate();
+	
 
 	/// <summary>
 	/// 描画
