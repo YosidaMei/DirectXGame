@@ -16,6 +16,7 @@ public:
 	/// 毎フレーム処理
 	/// </summary>
 	void Update();
+	void Rotate();
 
 	/// <summary>
 	/// 描画
@@ -32,4 +33,5 @@ public:
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;
+
 };
