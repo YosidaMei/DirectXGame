@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Input.h"
 #include "Matrix.h"
+#include "PlayerBullet.h"
 
 class Player {
 public:
@@ -23,6 +24,7 @@ public:
 	/// </summary>
 	void Draw(ViewProjection& viewProjection);
 
+
 	// テクスチャハンドル
 	uint32_t m_textureHandle_ = 0u;
 
@@ -33,5 +35,13 @@ public:
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;
+
+	private:
+	//弾
+	PlayerBullet* bullet_ = nullptr;
+	/// <summary>
+	/// 攻撃
+	/// </summary>
+	void Attack();
 
 };

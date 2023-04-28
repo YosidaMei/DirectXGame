@@ -15,7 +15,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 }
 
 void Player::Update() {
-	worldTransform_.TransferMatrix();
+	worldTransform_.UpdateMatrix();
 
 	//キャラの移動ベクトル
 	Vector3 move = {0, 0, 0};
@@ -48,12 +48,20 @@ void Player::Update() {
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
+	//キャラクター攻撃
+	Attack();
+	//弾更新
+	if (bullet_) {
+		bullet_->Update();
+	}
+
 	//デバッグ
 	ImGui::Begin("PlayerDebug");
 	ImGui::Text(
-	    "Pos x:%f y:%f z:%f", worldTransform_.translation_.x, worldTransform_.translation_.y,
+	    "PlayerPos x:%f y:%f z:%f", worldTransform_.translation_.x, worldTransform_.translation_.y,
 	    worldTransform_.translation_.z);
 	ImGui::End();
+
 
 }
 
@@ -71,5 +79,21 @@ void Player::Rotate() {
 void Player::Draw(ViewProjection& viewProjection) {
 
 	model_->Draw(worldTransform_, viewProjection, m_textureHandle_);
+	if (bullet_) {
+		bullet_->Draw(viewProjection);
+	}
+
+}
+
+void Player::Attack() { 
+	if (input_->TriggerKey(DIK_SPACE)) {
+	//弾を生成初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_);
+		//弾を登録
+		bullet_ = newBullet;
+	/*
+	*/
+	}
 
 }

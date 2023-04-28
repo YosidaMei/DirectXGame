@@ -1,19 +1,23 @@
 #include "PlayerBullet.h"
 #include <assert.h>
 
-void Initialize(Model* model, const Vector3& posion) { 
+void PlayerBullet::Initialize(Model* model, const Vector3& posion) { 
 	assert(model);
-	//model_ = model;
+	model_ = model;
+	m_textureHandle_ = TextureManager::Load("black.png");
+	worldTransform_.Initialize();
+	worldTransform_.translation_ = posion;
 }
 
 
-void Update() {
+void PlayerBullet::Update() {
 
+	worldTransform_.UpdateMatrix();
 
 }
 
 
-void Draw(ViewProjection& viewProjection) {
-
+void PlayerBullet::Draw(ViewProjection& viewProjection) {
+	model_->Draw(worldTransform_, viewProjection, m_textureHandle_);
 
 }
