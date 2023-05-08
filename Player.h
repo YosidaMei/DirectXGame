@@ -5,6 +5,7 @@
 #include "Input.h"
 #include "Matrix.h"
 #include "PlayerBullet.h"
+#include <list>
 
 class Player {
 public:
@@ -24,6 +25,10 @@ public:
 	/// </summary>
 	void Draw(ViewProjection& viewProjection);
 
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~Player();
 
 	// テクスチャハンドル
 	uint32_t m_textureHandle_ = 0u;
@@ -38,7 +43,9 @@ public:
 
 	private:
 	//弾
-	PlayerBullet* bullet_ = nullptr;
+	    std::list<PlayerBullet*> bullets_;
+	//PlayerBullet* bullet_ = nullptr;
+	
 	/// <summary>
 	/// 攻撃
 	/// </summary>
