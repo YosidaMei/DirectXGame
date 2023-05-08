@@ -6,6 +6,7 @@
 #include "Matrix.h"
 #include "PlayerBullet.h"
 #include <list>
+#include "MathFunction.h"
 
 class Player {
 public:
