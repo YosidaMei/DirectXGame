@@ -9,6 +9,7 @@ GameScene::GameScene() {}
 GameScene::~GameScene() { 
 	delete model_;
 	delete player_;
+	delete enemy_;
 	delete debugCamera_;
 }
 
@@ -25,18 +26,23 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_);
+	//敵キャラ
+	enemy_ = new Enemy();
+	enemy_->Initialize(model_);
 	//デバッグカメラ
 	debugCamera_ = new DebugCamera(1280, 720);
 
 	AxisIndicator::GetInstance()->SetVisible(true);
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
+	//
 
 }
 
 void GameScene::Update() { 
 	player_->Update();
 	debugCamera_->Update();
+	enemy_->Update();
 #ifdef DEBUG
 #endif // DEBUG
 	if (input_->TriggerKey(DIK_F)) {
@@ -90,6 +96,7 @@ void GameScene::Draw() {
 	//3Dモデル描画
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
+	enemy_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
