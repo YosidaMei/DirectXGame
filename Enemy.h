@@ -8,7 +8,12 @@
 #include <list>
 #include "MathFunction.h"
 
+enum class Phase {
+	Approach, // 接近
+	Leave,    // 離脱
+};
 class Enemy {
+
 public:
 	/// <summary>
 	/// 初期化
@@ -35,7 +40,9 @@ public:
 
 	Model* model_ = nullptr;
 
-
 	// ワールド変換データ
 	WorldTransform worldTransform_;
+	//フェーズ
+	Phase phase_ = Phase::Approach;
 };
+
