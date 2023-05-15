@@ -95,7 +95,7 @@ void Enemy::Draw(ViewProjection& viewProjection) {
 
 void Enemy::Fire() {
 	// 弾の速度
-	const float kBulletSpeed = -0.2f;
+	const float kBulletSpeed = -0.5f;
 	Vector3 velocity(0, 0, kBulletSpeed);
 	// 速度ベクトルを自機の向きに合わせて回転させる
 	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
