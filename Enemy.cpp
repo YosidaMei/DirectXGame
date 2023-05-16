@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include <cassert>
 #include "ImGuiManager.h"
+#include "Player.h"
 
 void Enemy::Initialize(Model* model) {
 	// Nullポインタチェック
@@ -31,8 +32,6 @@ void Enemy::Update(){
 	for (EnemyBullet* bullet : bullets_) {
 		bullet->Update();
 	}
-	/*
-	*/
 
 	// キャラの速さ
 	const float kCharaSpeed = 0.1f;
@@ -94,16 +93,32 @@ void Enemy::Draw(ViewProjection& viewProjection) {
 }
 
 void Enemy::Fire() {
+	assert(player_);
+
 	// 弾の速度
-	const float kBulletSpeed = -0.5f;
-	Vector3 velocity(0, 0, kBulletSpeed);
+	const float kBulletSpeed = 1.0f;
+	
+	Vector3 player_worldPos = player_->GetWorldPosition();
+	Vector3 enemy_worldPos = GetWorldPosition();
+	Vector3 newVector = {
+	    player_worldPos.x - enemy_worldPos.x,
+	    player_worldPos.y - enemy_worldPos.y,
+	    player_worldPos.z - enemy_worldPos.z
+	};
+
+	Normalize(newVector);
+	newVector.x *= kBulletSpeed;
+	newVector.y *= kBulletSpeed;
+	newVector.z *= kBulletSpeed;
+
+	Vector3 velocity = newVector;
 	// 速度ベクトルを自機の向きに合わせて回転させる
-	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+	//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+	
 	// 弾を生成初期化
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 	// 弾を登録
-	// bullet_ = newBullet;
 	bullets_.push_back(newBullet);
 
 
@@ -112,4 +127,13 @@ void Enemy::Fire() {
 void Enemy::approachInitialize() {
 	//発射タイマーを初期化
 	fireTimer = kFireInterval;
+}
+
+Vector3 Enemy::GetWorldPosition() {
+	// ワールド座標を入れる
+	Vector3 worldPos;
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+	return worldPos;
 }

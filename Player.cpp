@@ -11,7 +11,6 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	worldTransform_.Initialize();
 	//シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
-
 }
 
 Player::~Player() {
@@ -123,3 +122,14 @@ void Player::Attack() {
 	}
 
 }
+
+Vector3 Player::GetWorldPosition(){
+	// ワールド座標を入れる
+	Vector3 worldPos;
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+	return worldPos;
+
+}
+

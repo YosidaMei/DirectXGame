@@ -42,6 +42,9 @@ public:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 	private:
 	//弾
 	    std::list<PlayerBullet*> bullets_;

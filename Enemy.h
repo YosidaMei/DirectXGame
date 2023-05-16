@@ -9,6 +9,9 @@
 #include "MathFunction.h"
 #include "EnemyBullet.h"
 
+//自機クラスの前方宣言
+class Player;
+
 enum class Phase {
 	Approach, // 接近
 	Leave,    // 離脱
@@ -57,6 +60,14 @@ public:
 	int32_t fireTimer = 0;
 
 	void approachInitialize();
+
+	// 自キャラ
+	Player* player_ = nullptr;
+	void SetPlayer(Player* player) { player_ = player; }
+
+	
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
 
 	private:
 	std::list<EnemyBullet*> bullets_;
