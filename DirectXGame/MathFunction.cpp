@@ -9,12 +9,12 @@ Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) {
 }
 
 Vector3 Normalize(Vector3& pos) { 
-	Vector3 newPos = pos;
+	//Vector3 newPos = pos;
 	float length = sqrt((pos.x * pos.x) + (pos.y * pos.y) + (pos.z * pos.z));
 	if (length != 0.0f) {
-		newPos.x = pos.x / length;
-		newPos.y = pos.y / length;
-		newPos.z = pos.z / length;
+		pos.x /= length;
+		pos.y /= length;
+		pos.z /= length;
 	}
-	return newPos;
+	return pos;
 }

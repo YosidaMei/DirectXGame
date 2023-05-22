@@ -111,7 +111,7 @@ void Enemy::Fire() {
 	newVector.y *= kBulletSpeed;
 	newVector.z *= kBulletSpeed;
 
-	Vector3 velocity = newVector;
+	Vector3 velocity(newVector);
 	// 速度ベクトルを自機の向きに合わせて回転させる
 	//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 	
