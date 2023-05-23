@@ -133,3 +133,8 @@ Vector3 Player::GetWorldPosition(){
 
 }
 
+
+void Player::OnConllision() {
+
+}
+

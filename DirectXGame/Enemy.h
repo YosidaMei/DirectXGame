@@ -34,11 +34,14 @@ public:
 	/// </summary>
 	void Draw(ViewProjection& viewProjection);
 	
-	~Enemy();
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
+	~Enemy();
+
+	// 衝突を検知したら呼び出される関数
+	void OnConllision();
 
 	// テクスチャハンドル
 	uint32_t m_textureHandle_ = 0u;
@@ -65,9 +68,13 @@ public:
 	Player* player_ = nullptr;
 	void SetPlayer(Player* player) { player_ = player; }
 
-	
+	const float radius_ = 2;
+
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
+
+	// 弾リストを取得
+	const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
 
 	private:
 	std::list<EnemyBullet*> bullets_;

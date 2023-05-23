@@ -62,6 +62,9 @@ void GameScene::Update() {
 		viewProjection_.UpdateMatrix();
 	}
 	player_->Rotate();
+
+	CheckAllCollisions();
+
 }
 
 
@@ -113,6 +116,80 @@ void GameScene::Draw() {
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
+
+#pragma endregion
+}
+
+void GameScene::CheckAllCollisions() { 
+	//判定対象A,Bの座標
+	Vector3 posA, posB; 
+	//自弾リストの取得
+	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
+	//敵弾リストの取得
+	const std::list<EnemyBullet*>& enemyBullets =enemy_->GetBullets();
+
+#pragma region 自キャラと敵弾の当たり判定
+	posA = player_->GetWorldPosition();
+
+	//自キャラと敵弾すべての当たり判定
+	for (EnemyBullet* bullet : enemyBullets) {
+	
+	//敵弾の座標
+		posB = bullet->GetWorldPosition();
+		float length = ((posB.x - posA.x) * (posB.x - posA.x)) +
+		               ((posB.y - posA.y) * (posB.y - posA.y)) +
+		               ((posB.z - posA.z) * (posB.z - posA.z));
+		//球と球の交差判定
+		if (length <= (player_->radius_ + bullet->radius_) * (player_->radius_ + bullet->radius_)) {
+			//自キャラの衝突時
+			player_->OnConllision();
+			//敵弾の衝突時
+			bullet->OnConllision();
+		}
+	}
+#pragma endregion
+
+#pragma region 自弾と敵キャラの当たり判定
+		// 敵の座標
+		posB = enemy_->GetWorldPosition();
+
+	// 自弾と敵すべての当たり判定
+	for (PlayerBullet* bullet : playerBullets) {
+		posA = bullet->GetWorldPosition();
+
+		float length = ((posB.x - posA.x) * (posB.x - posA.x)) +
+		               ((posB.y - posA.y) * (posB.y - posA.y)) +
+		               ((posB.z - posA.z) * (posB.z - posA.z));
+		// 球と球の交差判定
+		if (length <= (player_->radius_ + bullet->radius_) * (player_->radius_ + bullet->radius_)) {
+			// 自キャラの衝突時
+			player_->OnConllision();
+			// 敵弾の衝突時
+			bullet->OnConllision();
+		}
+	}
+#pragma endregion
+
+#pragma region 自弾と敵弾の当たり判定
+	// 自弾と敵弾の当たり判定
+	for (PlayerBullet* bulletA : playerBullets) {
+		for (EnemyBullet* bulletB : enemyBullets) {
+			posA = bulletA->GetWorldPosition();
+			posB = bulletB->GetWorldPosition();
+
+			float length = ((posB.x - posA.x) * (posB.x - posA.x)) +
+			               ((posB.y - posA.y) * (posB.y - posA.y)) +
+			               ((posB.z - posA.z) * (posB.z - posA.z));
+			// 球と球の交差判定
+			if (length <=
+			    (bulletB->radius_ + bulletA->radius_) * (bulletB->radius_ + bulletA->radius_)) {
+				// 自キャラの衝突時
+				bulletB->OnConllision();
+				// 敵弾の衝突時
+				bulletA->OnConllision();
+			}
+		}
+	}
 
 #pragma endregion
 }

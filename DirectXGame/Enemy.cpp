@@ -10,7 +10,7 @@ void Enemy::Initialize(Model* model) {
 	model_ = model;
 	m_textureHandle_ = TextureManager::Load("AL3wadoru.png");
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = {5, 3, 20};
+	worldTransform_.translation_ = {5, 3, 40};
 	
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
@@ -137,3 +137,5 @@ Vector3 Enemy::GetWorldPosition() {
 	worldPos.z = worldTransform_.translation_.z;
 	return worldPos;
 }
+
+void Enemy::OnConllision() {}

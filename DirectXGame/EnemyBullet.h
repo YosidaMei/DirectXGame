@@ -12,6 +12,13 @@ public:
 	void Draw(ViewProjection& viewProjection);
 	bool IsDead() const { return isDead_; }
 
+	// Õ“Ë‚ğŒŸ’m‚µ‚½‚çŒÄ‚Ño‚³‚ê‚éŠÖ”
+	void OnConllision();
+
+	Vector3 GetWorldPosition();
+
+	const float radius_ = 2;
+
 	private:
 	Model* model_ = nullptr;
 	WorldTransform worldTransform_;

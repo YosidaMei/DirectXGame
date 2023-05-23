@@ -23,7 +23,15 @@ public:
 	/// </summary>
 	void Draw(ViewProjection& viewProjection);
 
+	// 衝突を検知したら呼び出される関数
+	void OnConllision();
+
 	bool IsDead() const { return isDead_; }
+
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
+	const float radius_ = 1;
 
 	private:
 

@@ -28,3 +28,14 @@ void PlayerBullet::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, m_textureHandle_);
 
 }
+
+void PlayerBullet::OnConllision() { isDead_ = true; }
+
+Vector3 PlayerBullet::GetWorldPosition() {
+	// ƒ[ƒ‹ƒhÀ•W‚ğ“ü‚ê‚é
+	Vector3 worldPos;
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+	return worldPos;
+}

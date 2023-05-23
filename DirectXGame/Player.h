@@ -31,6 +31,14 @@ public:
 	/// </summary>
 	~Player();
 
+	/// <summary>
+	/// 攻撃
+	/// </summary>
+	void Attack();
+
+	//衝突を検知したら呼び出される関数
+	void OnConllision();
+
 	// テクスチャハンドル
 	uint32_t m_textureHandle_ = 0u;
 
@@ -45,14 +53,15 @@ public:
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+		//弾リストを取得
+	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
+
+	const float radius_ = 2;
+
 	private:
 	//弾
 	    std::list<PlayerBullet*> bullets_;
 	//PlayerBullet* bullet_ = nullptr;
 	
-	/// <summary>
-	/// 攻撃
-	/// </summary>
-	void Attack();
 
 };
