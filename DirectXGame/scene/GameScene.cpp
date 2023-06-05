@@ -11,6 +11,8 @@ GameScene::~GameScene() {
 	delete player_;
 	delete enemy_;
 	delete debugCamera_;
+	delete skydome_;
+	delete modelSkydome_;
 }
 
 void GameScene::Initialize() {
@@ -22,6 +24,7 @@ void GameScene::Initialize() {
 	// 3Dモデル
 	model_ = Model::Create();
 	worldTransform_.Initialize();
+	viewProjection_.farZ = 100;
 	viewProjection_.Initialize();
 	// 自キャラの生成
 	player_ = new Player();
@@ -29,6 +32,11 @@ void GameScene::Initialize() {
 	//敵キャラ
 	enemy_ = new Enemy();
 	enemy_->Initialize(model_);
+	//天球
+	skydome_ = new Skydome();
+	modelSkydome_ = Model::CreateFromOBJ("tenkyuu", true);
+	skydome_->Initialize(modelSkydome_);
+
 	//デバッグカメラ
 	debugCamera_ = new DebugCamera(1280, 720);
 
@@ -44,8 +52,10 @@ void GameScene::Update() {
 	player_->Update();
 	debugCamera_->Update();
 	enemy_->Update();
+	skydome_->Update();
 #ifdef DEBUG
 #endif // DEBUG
+	//F押すとデバッグカメラ
 	if (input_->TriggerKey(DIK_F)) {
 		if (isDebugCameraActive_ != true) {
 			isDebugCameraActive_ = true;
@@ -101,6 +111,8 @@ void GameScene::Draw() {
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
 	enemy_->Draw(viewProjection_);
+	skydome_->Draw(viewProjection_);
+	
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

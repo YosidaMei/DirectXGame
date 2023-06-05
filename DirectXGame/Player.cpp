@@ -40,11 +40,18 @@ void Player::Update() {
 	} else if (input_->PushKey(DIK_UP)) {
 		move.y += kCharaSpeed;
 	}
+	//Z軸
+	if (input_->PushKey(DIK_Q)) {
+		move.z -= kCharaSpeed;
+	} else if (input_->PushKey(DIK_E)) {
+		move.z += kCharaSpeed;
+	}
 
 	//座標移動(ベクトルの加算)
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.translation_.x += move.x;
 	worldTransform_.translation_.y += move.y;
+	worldTransform_.translation_.z += move.z;
 
 	//移動限界の座標
 	const float kMoveLimitX = 25;
