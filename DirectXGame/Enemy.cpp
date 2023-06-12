@@ -26,7 +26,6 @@ Enemy::~Enemy() {
 
 
 void Enemy::Update(){
-	worldTransform_.UpdateMatrix();
 
 
 	for (EnemyBullet* bullet : bullets_) {
@@ -34,8 +33,8 @@ void Enemy::Update(){
 	}
 
 	// キャラの速さ
-	const float kCharaSpeed = 0.1f;
-	const float kLeaveSpeed = 0.3f;
+	const float kCharaSpeed = 0.05f;
+	const float kLeaveSpeed = 0.2f;
 	/*
 	// キャラの移動ベクトル
 	Vector3 move = {0, 0, -kCharaSpeed};
@@ -82,6 +81,7 @@ void Enemy::Update(){
 
 		break;
 	}
+	worldTransform_.UpdateMatrix();
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) {
@@ -96,7 +96,7 @@ void Enemy::Fire() {
 	assert(player_);
 
 	// 弾の速度
-	const float kBulletSpeed = 1.0f;
+	const float kBulletSpeed = 0.5f;
 	
 	Vector3 player_worldPos = player_->GetWorldPosition();
 	Vector3 enemy_worldPos = GetWorldPosition();
@@ -117,7 +117,7 @@ void Enemy::Fire() {
 	
 	// 弾を生成初期化
 	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+	newBullet->Initialize(model_, GetWorldPosition(), velocity);
 	// 弾を登録
 	bullets_.push_back(newBullet);
 
@@ -132,9 +132,9 @@ void Enemy::approachInitialize() {
 Vector3 Enemy::GetWorldPosition() {
 	// ワールド座標を入れる
 	Vector3 worldPos;
-	worldPos.x = worldTransform_.translation_.x;
-	worldPos.y = worldTransform_.translation_.y;
-	worldPos.z = worldTransform_.translation_.z;
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
 	return worldPos;
 }
 

@@ -15,10 +15,10 @@ void EnemyBullet::Update() {
 	worldTransform_.translation_.x += velocity_.x;
 	worldTransform_.translation_.y += velocity_.y;
 	worldTransform_.translation_.z += velocity_.z;
-	worldTransform_.UpdateMatrix();
 	if (--deathTimer_ <= 0) {
 		isDead_ = true;
 	}
+	worldTransform_.UpdateMatrix();
 }
 
 void EnemyBullet::Draw(ViewProjection& viewProjection) {
@@ -30,8 +30,8 @@ void EnemyBullet::OnConllision() { isDead_ = true; }
 Vector3 EnemyBullet::GetWorldPosition() {
 	// ƒ[ƒ‹ƒhÀ•W‚ð“ü‚ê‚é
 	Vector3 worldPos;
-	worldPos.x = worldTransform_.translation_.x;
-	worldPos.y = worldTransform_.translation_.y;
-	worldPos.z = worldTransform_.translation_.z;
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
 	return worldPos;
 }

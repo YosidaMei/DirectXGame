@@ -2,13 +2,14 @@
 #include <cassert>
 #include "ImGuiManager.h"
 
-void Player::Initialize(Model* model, uint32_t textureHandle) {
+void Player::Initialize(Model* model, uint32_t textureHandle,Vector3 pos) {
 	// Nullポインタチェック
 	assert(model);
 	// モデル
 	model_ = model;
 	m_textureHandle_ = textureHandle;
 	worldTransform_.Initialize();
+	worldTransform_.translation_.z += pos.z;
 	//シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
 }
@@ -22,7 +23,6 @@ Player::~Player() {
 }
 
 void Player::Update() {
-	worldTransform_.UpdateMatrix();
 
 	//キャラの移動ベクトル
 	Vector3 move = {0, 0, 0};
@@ -48,7 +48,7 @@ void Player::Update() {
 	}
 
 	//座標移動(ベクトルの加算)
-	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	//worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.translation_.x += move.x;
 	worldTransform_.translation_.y += move.y;
 	worldTransform_.translation_.z += move.z;
@@ -61,6 +61,8 @@ void Player::Update() {
 	worldTransform_.translation_.x = min(worldTransform_.translation_.x, +kMoveLimitX);
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
+
+	worldTransform_.UpdateMatrix();
 
 	//キャラクター攻撃
 	Attack();
@@ -84,6 +86,7 @@ void Player::Update() {
 		}
 		return false;
 	});
+
 }
 
 void Player::Rotate() {
@@ -122,7 +125,7 @@ void Player::Attack() {
 		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 	//弾を生成初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 		//弾を登録
 		//bullet_ = newBullet;
 		bullets_.push_back(newBullet);
@@ -133,9 +136,9 @@ void Player::Attack() {
 Vector3 Player::GetWorldPosition(){
 	// ワールド座標を入れる
 	Vector3 worldPos;
-	worldPos.x = worldTransform_.translation_.x;
-	worldPos.y = worldTransform_.translation_.y;
-	worldPos.z = worldTransform_.translation_.z;
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
 	return worldPos;
 
 }
@@ -143,5 +146,10 @@ Vector3 Player::GetWorldPosition(){
 
 void Player::OnConllision() {
 
+}
+
+void Player::SetParent(const WorldTransform* parent) {
+	//親子関係を結ぶ
+	worldTransform_.parent_ = parent;
 }
 

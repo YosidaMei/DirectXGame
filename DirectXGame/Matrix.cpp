@@ -191,3 +191,151 @@ Matrix4x4 MakeAffineMatrix(Vector3 scale, Vector3 theta, Vector3 translate) {
 
 	return SRT_Matrix;
 }
+
+// ãtçsóÒ4x4
+
+Matrix4x4 Inverse(Matrix4x4 matrix) {
+	Matrix4x4 Inverse;
+	float A = matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][2] * matrix.m[3][3] +
+	          matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][3] * matrix.m[3][1] +
+	          matrix.m[0][0] * matrix.m[1][3] * matrix.m[2][1] * matrix.m[3][2] -
+	          matrix.m[0][0] * matrix.m[1][3] * matrix.m[2][2] * matrix.m[3][1] -
+	          matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][1] * matrix.m[3][3] -
+	          matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][3] * matrix.m[3][2] -
+	          matrix.m[0][1] * matrix.m[1][0] * matrix.m[2][2] * matrix.m[3][3] -
+	          matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][3] * matrix.m[3][1] -
+	          matrix.m[0][3] * matrix.m[1][0] * matrix.m[2][1] * matrix.m[3][2] +
+	          matrix.m[0][3] * matrix.m[1][0] * matrix.m[2][2] * matrix.m[3][1] +
+	          matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][1] * matrix.m[3][3] +
+	          matrix.m[0][1] * matrix.m[1][0] * matrix.m[2][3] * matrix.m[3][2] +
+	          matrix.m[0][1] * matrix.m[1][2] * matrix.m[2][0] * matrix.m[3][3] +
+	          matrix.m[0][2] * matrix.m[1][3] * matrix.m[2][0] * matrix.m[3][1] +
+	          matrix.m[0][3] * matrix.m[1][1] * matrix.m[2][0] * matrix.m[3][2] -
+	          matrix.m[0][3] * matrix.m[1][2] * matrix.m[2][0] * matrix.m[3][1] -
+	          matrix.m[0][2] * matrix.m[1][1] * matrix.m[2][0] * matrix.m[3][3] -
+	          matrix.m[0][1] * matrix.m[1][3] * matrix.m[2][0] * matrix.m[3][2] -
+	          matrix.m[0][1] * matrix.m[1][2] * matrix.m[2][3] * matrix.m[3][0] -
+	          matrix.m[0][2] * matrix.m[1][3] * matrix.m[2][1] * matrix.m[3][0] -
+	          matrix.m[0][3] * matrix.m[1][1] * matrix.m[2][2] * matrix.m[3][0] +
+	          matrix.m[0][3] * matrix.m[1][2] * matrix.m[2][1] * matrix.m[3][0] +
+	          matrix.m[0][2] * matrix.m[1][1] * matrix.m[2][3] * matrix.m[3][0] +
+	          matrix.m[0][1] * matrix.m[1][3] * matrix.m[2][2] * matrix.m[3][0];
+
+	Inverse.m[0][0] = 1 / A *
+	                  (matrix.m[1][1] * matrix.m[2][2] * matrix.m[3][3] +
+	                   matrix.m[1][2] * matrix.m[2][3] * matrix.m[3][1] +
+	                   matrix.m[1][3] * matrix.m[2][1] * matrix.m[3][2] -
+	                   matrix.m[1][3] * matrix.m[2][2] * matrix.m[3][1] -
+	                   matrix.m[1][2] * matrix.m[2][1] * matrix.m[3][3] -
+	                   matrix.m[1][1] * matrix.m[2][3] * matrix.m[3][2]);
+	Inverse.m[0][1] = 1 / A *
+	                  (-matrix.m[0][1] * matrix.m[2][2] * matrix.m[3][3] -
+	                   matrix.m[0][2] * matrix.m[2][3] * matrix.m[3][1] -
+	                   matrix.m[0][3] * matrix.m[2][1] * matrix.m[3][2] +
+	                   matrix.m[0][3] * matrix.m[2][2] * matrix.m[3][1] +
+	                   matrix.m[0][2] * matrix.m[2][1] * matrix.m[3][3] +
+	                   matrix.m[0][1] * matrix.m[2][3] * matrix.m[3][2]);
+	Inverse.m[0][2] = 1 / A *
+	                  (matrix.m[0][1] * matrix.m[1][2] * matrix.m[3][3] +
+	                   matrix.m[0][2] * matrix.m[1][3] * matrix.m[3][1] +
+	                   matrix.m[0][3] * matrix.m[1][1] * matrix.m[3][2] -
+	                   matrix.m[0][3] * matrix.m[1][2] * matrix.m[3][1] -
+	                   matrix.m[0][2] * matrix.m[1][1] * matrix.m[3][3] -
+	                   matrix.m[0][1] * matrix.m[1][3] * matrix.m[3][2]);
+	Inverse.m[0][3] = 1 / A *
+	                  (-matrix.m[0][1] * matrix.m[1][2] * matrix.m[2][3] -
+	                   matrix.m[0][2] * matrix.m[1][3] * matrix.m[2][1] -
+	                   matrix.m[0][3] * matrix.m[1][1] * matrix.m[2][2] +
+	                   matrix.m[0][3] * matrix.m[1][2] * matrix.m[2][1] +
+	                   matrix.m[0][2] * matrix.m[1][1] * matrix.m[2][3] +
+	                   matrix.m[0][1] * matrix.m[1][3] * matrix.m[2][2]);
+
+	Inverse.m[1][0] = 1 / A *
+	                  (-matrix.m[1][0] * matrix.m[2][2] * matrix.m[3][3] -
+	                   matrix.m[1][2] * matrix.m[2][3] * matrix.m[3][0] -
+	                   matrix.m[1][3] * matrix.m[2][0] * matrix.m[3][2] +
+	                   matrix.m[1][3] * matrix.m[2][2] * matrix.m[3][0] +
+	                   matrix.m[1][2] * matrix.m[2][0] * matrix.m[3][3] +
+	                   matrix.m[1][0] * matrix.m[2][3] * matrix.m[3][2]);
+	Inverse.m[1][1] = 1 / A *
+	                  (matrix.m[0][0] * matrix.m[2][2] * matrix.m[3][3] +
+	                   matrix.m[0][2] * matrix.m[2][3] * matrix.m[3][0] +
+	                   matrix.m[0][3] * matrix.m[2][0] * matrix.m[3][2] -
+	                   matrix.m[0][3] * matrix.m[2][2] * matrix.m[3][0] -
+	                   matrix.m[0][2] * matrix.m[2][0] * matrix.m[3][3] -
+	                   matrix.m[0][0] * matrix.m[2][3] * matrix.m[3][2]);
+	Inverse.m[1][2] = 1 / A *
+	                  (-matrix.m[0][0] * matrix.m[1][2] * matrix.m[3][3] -
+	                   matrix.m[0][2] * matrix.m[1][3] * matrix.m[3][0] -
+	                   matrix.m[0][3] * matrix.m[1][0] * matrix.m[3][2] +
+	                   matrix.m[0][3] * matrix.m[1][2] * matrix.m[3][0] +
+	                   matrix.m[0][2] * matrix.m[1][0] * matrix.m[3][3] +
+	                   matrix.m[0][0] * matrix.m[1][3] * matrix.m[3][2]);
+	Inverse.m[1][3] = 1 / A *
+	                  (matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][3] +
+	                   matrix.m[0][2] * matrix.m[1][3] * matrix.m[2][0] +
+	                   matrix.m[0][3] * matrix.m[1][0] * matrix.m[2][2] -
+	                   matrix.m[0][3] * matrix.m[1][2] * matrix.m[2][0] -
+	                   matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][3] -
+	                   matrix.m[0][0] * matrix.m[1][3] * matrix.m[2][2]);
+
+	Inverse.m[2][0] = 1 / A *
+	                  (matrix.m[1][0] * matrix.m[2][1] * matrix.m[3][3] +
+	                   matrix.m[1][1] * matrix.m[2][3] * matrix.m[3][0] +
+	                   matrix.m[1][3] * matrix.m[2][0] * matrix.m[3][1] -
+	                   matrix.m[1][3] * matrix.m[2][1] * matrix.m[3][0] -
+	                   matrix.m[1][1] * matrix.m[2][0] * matrix.m[3][3] -
+	                   matrix.m[1][0] * matrix.m[2][3] * matrix.m[3][1]);
+	Inverse.m[2][1] = 1 / A *
+	                  (-matrix.m[0][0] * matrix.m[2][1] * matrix.m[3][3] -
+	                   matrix.m[0][1] * matrix.m[2][3] * matrix.m[3][0] -
+	                   matrix.m[0][3] * matrix.m[2][0] * matrix.m[3][1] +
+	                   matrix.m[0][3] * matrix.m[2][1] * matrix.m[3][0] +
+	                   matrix.m[0][1] * matrix.m[2][0] * matrix.m[3][3] +
+	                   matrix.m[0][0] * matrix.m[2][3] * matrix.m[3][1]);
+	Inverse.m[2][2] = 1 / A *
+	                  (matrix.m[0][0] * matrix.m[1][1] * matrix.m[3][3] +
+	                   matrix.m[0][1] * matrix.m[1][3] * matrix.m[3][0] +
+	                   matrix.m[0][3] * matrix.m[1][0] * matrix.m[3][1] -
+	                   matrix.m[0][3] * matrix.m[1][1] * matrix.m[3][0] -
+	                   matrix.m[0][1] * matrix.m[1][0] * matrix.m[3][3] -
+	                   matrix.m[0][0] * matrix.m[1][3] * matrix.m[3][1]);
+	Inverse.m[2][3] = 1 / A *
+	                  (-matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][3] -
+	                   matrix.m[0][1] * matrix.m[1][3] * matrix.m[2][0] -
+	                   matrix.m[0][3] * matrix.m[1][0] * matrix.m[2][1] +
+	                   matrix.m[0][3] * matrix.m[1][1] * matrix.m[2][0] +
+	                   matrix.m[0][1] * matrix.m[1][0] * matrix.m[2][3] +
+	                   matrix.m[0][0] * matrix.m[1][3] * matrix.m[2][1]);
+
+	Inverse.m[3][0] = 1 / A *
+	                  (-matrix.m[1][0] * matrix.m[2][1] * matrix.m[3][2] -
+	                   matrix.m[1][1] * matrix.m[2][2] * matrix.m[3][0] -
+	                   matrix.m[1][2] * matrix.m[2][0] * matrix.m[3][1] +
+	                   matrix.m[1][2] * matrix.m[2][1] * matrix.m[3][0] +
+	                   matrix.m[1][1] * matrix.m[2][0] * matrix.m[3][2] +
+	                   matrix.m[1][0] * matrix.m[2][2] * matrix.m[3][1]);
+	Inverse.m[3][1] = 1 / A *
+	                  (matrix.m[0][0] * matrix.m[2][1] * matrix.m[3][2] +
+	                   matrix.m[0][1] * matrix.m[2][2] * matrix.m[3][0] +
+	                   matrix.m[0][2] * matrix.m[2][0] * matrix.m[3][1] -
+	                   matrix.m[0][2] * matrix.m[2][1] * matrix.m[3][0] -
+	                   matrix.m[0][1] * matrix.m[2][0] * matrix.m[3][2] -
+	                   matrix.m[0][0] * matrix.m[2][2] * matrix.m[3][1]);
+	Inverse.m[3][2] = 1 / A *
+	                  (-matrix.m[0][0] * matrix.m[1][1] * matrix.m[3][2] -
+	                   matrix.m[0][1] * matrix.m[1][2] * matrix.m[3][0] -
+	                   matrix.m[0][2] * matrix.m[1][0] * matrix.m[3][1] +
+	                   matrix.m[0][2] * matrix.m[1][1] * matrix.m[3][0] +
+	                   matrix.m[0][1] * matrix.m[1][0] * matrix.m[3][2] +
+	                   matrix.m[0][0] * matrix.m[1][2] * matrix.m[3][1]);
+	Inverse.m[3][3] = 1 / A *
+	                  (matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][2] +
+	                   matrix.m[0][1] * matrix.m[1][2] * matrix.m[2][0] +
+	                   matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][1] -
+	                   matrix.m[0][2] * matrix.m[1][1] * matrix.m[2][0] -
+	                   matrix.m[0][1] * matrix.m[1][0] * matrix.m[2][2] -
+	                   matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][1]);
+
+	return Inverse;
+}

@@ -13,7 +13,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model, uint32_t textureHandle);
+	void Initialize(Model* model, uint32_t textureHandle,Vector3 pos);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -38,6 +38,11 @@ public:
 
 	//衝突を検知したら呼び出される関数
 	void OnConllision();
+
+	/// <summary>
+	/// 親となるワールドトランスフォームをセット
+	/// </summary>
+	void SetParent(const WorldTransform* parent);
 
 	// テクスチャハンドル
 	uint32_t m_textureHandle_ = 0u;

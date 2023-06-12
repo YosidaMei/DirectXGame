@@ -27,8 +27,9 @@ void GameScene::Initialize() {
 	viewProjection_.farZ = 100;
 	viewProjection_.Initialize();
 	// 自キャラの生成
+	Vector3 playerPosition(0, 0, 15);//前にずらす量
 	player_ = new Player();
-	player_->Initialize(model_, textureHandle_);
+	player_->Initialize(model_, textureHandle_,playerPosition);
 	//敵キャラ
 	enemy_ = new Enemy();
 	enemy_->Initialize(model_);
@@ -39,12 +40,18 @@ void GameScene::Initialize() {
 
 	//デバッグカメラ
 	debugCamera_ = new DebugCamera(1280, 720);
+	//レールカメラ
+	railCamera_ = new RailCamera();
+	railCamera_->Initialize(worldTransform_);
 
 	AxisIndicator::GetInstance()->SetVisible(true);
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
 	//敵キャラに自キャラのアドレスを渡す
 	enemy_->SetPlayer(player_);
+
+	//自キャラとレールカメラの親子関係を結ぶ
+	player_->SetParent(&railCamera_->GetWorldTransform());
 
 }
 
@@ -53,6 +60,7 @@ void GameScene::Update() {
 	debugCamera_->Update();
 	enemy_->Update();
 	skydome_->Update();
+	railCamera_->Update();
 #ifdef DEBUG
 #endif // DEBUG
 	//F押すとデバッグカメラ
@@ -63,6 +71,8 @@ void GameScene::Update() {
 			isDebugCameraActive_ = false;
 		}
 	}
+	
+
 	if (isDebugCameraActive_) {
 		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
@@ -70,7 +80,11 @@ void GameScene::Update() {
 		viewProjection_.TransferMatrix();
 	} else {
 		viewProjection_.UpdateMatrix();
+		viewProjection_.matView = railCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
+		viewProjection_.TransferMatrix();
 	}
+
 	player_->Rotate();
 
 	CheckAllCollisions();
