@@ -12,11 +12,6 @@ void Player::Initialize(Model* model, uint32_t textureHandle,Vector3 pos) {
 	worldTransform_.translation_.z += pos.z;
 	//シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
-	//3Dレティクルのワールドトランスフォーム初期化
-	worldTransform3DReticle_.Initialize();
-	//レティクルモデル
-	retiModel_ = Model::Create();
-	kariTextureHandle_ = TextureManager::Load("white1x1.png");
 
 }
 
@@ -93,19 +88,7 @@ void Player::Update() {
 		return false;
 	});
 
-	//自機のワールド座標から3Dレティクルのワールド座標を計算
-	//自機から3Dレティクルの距離
-	const float kDistancePlayerTo3DReticle = 20.0f;
-	//自機から3dレティクルへのオフセット
-	Vector3 offset = {0, 0, 1.0f};
-	//自機のワールド行列の回転を反映
-	offset = VecMatMultiply(offset, worldTransform_.matWorld_);
-	//ベクトルの長さを整える
-	offset = Normalize(offset);
-	offset = Scaler(kDistancePlayerTo3DReticle, offset);
-	//3dレティクルの座標を設定
-	worldTransform3DReticle_.translation_ = Add(worldTransform_.translation_, offset);
-	worldTransform3DReticle_.UpdateMatrix();
+	
 }
 
 void Player::Rotate() {
@@ -125,9 +108,6 @@ void Player::Draw(ViewProjection& viewProjection) {
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
-
-	//3ⅾレティクルを描画
-	retiModel_->Draw(worldTransform3DReticle_, viewProjection, kariTextureHandle_);
 }
 
 void Player::Attack() { 
@@ -144,11 +124,6 @@ void Player::Attack() {
 		//弾を登録
 		//bullet_ = newBullet;
 		bullets_.push_back(newBullet);
-	//自機から照準オブジェクトへのベクトル
-		velocity = Subtract(worldTransform3DReticle_.translation_, worldTransform_.translation_);
-		velocity = Normalize(velocity);
-		velocity = Scaler(kBulletSpeed, velocity);
-
 	}
 
 }
