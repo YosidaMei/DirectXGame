@@ -11,6 +11,7 @@
 
 //自機クラスの前方宣言
 class Player;
+class GameScene;
 
 enum class Phase {
 	Approach, // 接近
@@ -22,7 +23,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model);
+	void Initialize(Model* model,Vector3 position);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -74,10 +75,14 @@ public:
 	Vector3 GetWorldPosition();
 
 	// 弾リストを取得
-	const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
+	//const std::list<EnemyBullet*>& GetBullets() { return enemyBullets_; }
+
+	//ゲームシーン
+	GameScene* gameScene_ = nullptr;
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 	private:
-	std::list<EnemyBullet*> bullets_;
+	std::list<EnemyBullet*> enemyBullets_;
 	/// <summary>
 	/// 弾発射
 	/// </summary>

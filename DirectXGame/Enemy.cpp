@@ -2,15 +2,16 @@
 #include <cassert>
 #include "ImGuiManager.h"
 #include "Player.h"
+#include "GameScene.h"
 
-void Enemy::Initialize(Model* model) {
+void Enemy::Initialize(Model* model, Vector3 position) {
 	// Nullポインタチェック
 	assert(model);
 	// モデル
 	model_ = model;
 	m_textureHandle_ = TextureManager::Load("AL3wadoru.png");
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = {5, 3, 40};
+	worldTransform_.translation_ = position;
 	
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
@@ -19,41 +20,23 @@ void Enemy::Initialize(Model* model) {
 }
 
 Enemy::~Enemy() {
-	for (EnemyBullet* bullet : bullets_) {
+	/*for (EnemyBullet* bullet : bullets_) {
 		delete bullet;
-	}
+	}*/
 }
 
 
 void Enemy::Update(){
 
 
-	for (EnemyBullet* bullet : bullets_) {
+	/*for (EnemyBullet* bullet : bullets_) {
 		bullet->Update();
-	}
+	}*/
 
 	// キャラの速さ
 	const float kCharaSpeed = 0.05f;
 	const float kLeaveSpeed = 0.2f;
-	/*
-	// キャラの移動ベクトル
-	Vector3 move = {0, 0, -kCharaSpeed};
-	// 座標移動(ベクトルの加算)
-	worldTransform_.matWorld_ = MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-	worldTransform_.translation_.x += move.x;
-	worldTransform_.translation_.y += move.y;
-	worldTransform_.translation_.z += move.z;
-	*/
 
-	// デスフラグの立った弾を削除
-	bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
 
 	//行動切り替え
 	switch (phase_) {
@@ -82,14 +65,15 @@ void Enemy::Update(){
 		break;
 	}
 	worldTransform_.UpdateMatrix();
+
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) {
 
 	model_->Draw(worldTransform_, viewProjection, m_textureHandle_);
-	for (EnemyBullet* bullet : bullets_) {
+	/*for (EnemyBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
-	}
+	}*/
 }
 
 void Enemy::Fire() {
@@ -119,8 +103,9 @@ void Enemy::Fire() {
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Initialize(model_, GetWorldPosition(), velocity);
 	// 弾を登録
-	bullets_.push_back(newBullet);
+	//enemyBullets_.push_back(newBullet);
 
+	gameScene_->AddEnemyBullet(newBullet);
 
 }
 
