@@ -63,6 +63,13 @@ public:
 
 	const float radius_ = 2;
 
+	//3Dレティクル用ワールドトランスフォーム
+	WorldTransform worldTransform3DReticle_;
+
+	//モデル
+	Model* retiModel_ = nullptr;
+	uint32_t kariTextureHandle_ = 0u;
+
 	private:
 	//弾
 	    std::list<PlayerBullet*> bullets_;

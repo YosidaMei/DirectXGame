@@ -339,3 +339,42 @@ Matrix4x4 Inverse(Matrix4x4 matrix) {
 
 	return Inverse;
 }
+
+//ベクトルと行列の積
+Vector3 VecMatMultiply(Vector3 vector, Matrix4x4 matrix) {
+	Vector3 Multiply;
+	Multiply.x =
+	    (vector.x * matrix.m[0][0]) + (vector.y * matrix.m[1][0]) + (vector.z * matrix.m[2][0]);
+	Multiply.y =
+	    (vector.x * matrix.m[0][1]) + (vector.y * matrix.m[1][1]) + (vector.z * matrix.m[2][1]);
+	Multiply.z =
+	    (vector.x * matrix.m[0][2]) + (vector.y * matrix.m[1][2]) + (vector.z * matrix.m[2][2]);
+	return Multiply;
+}
+
+// スカラー倍
+Vector3 Scaler(float scalar, Vector3& v2) {
+	Vector3 Multiply;
+	Multiply.x = scalar * v2.x;
+	Multiply.y = scalar * v2.y;
+	Multiply.z = scalar * v2.z;
+	return Multiply;
+}
+
+// 1.行列の加法
+Vector3 Add(Vector3& v1, Vector3& v2) {
+	Vector3 Add;
+	Add.x = v1.x + v2.x;
+	Add.y = v1.y + v2.y;
+	Add.z = v1.z + v2.z;
+	return Add;
+}
+
+// 2.減法
+Vector3 Subtract(Vector3& v1, Vector3& v2) {
+	Vector3 Subtract;
+	Subtract.x = v1.x - v2.x;
+	Subtract.y = v1.y - v2.y;
+	Subtract.z = v1.z - v2.z;
+	return Subtract;
+}
