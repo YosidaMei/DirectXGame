@@ -340,6 +340,70 @@ Matrix4x4 Inverse(Matrix4x4 matrix) {
 	return Inverse;
 }
 
+Matrix4x4 MakeOrthographicMatrix(
+    float left, float top, float right, float bottom, float nearClip, float farClip) {
+	Matrix4x4 ortho;
+	ortho.m[0][0] = 2.0f / (right - left);
+	ortho.m[0][1] = 0;
+	ortho.m[0][2] = 0;
+	ortho.m[0][3] = 0;
+	ortho.m[1][0] = 0;
+	ortho.m[1][1] = 2.0f / (top - bottom);
+	ortho.m[1][2] = 0;
+	ortho.m[1][3] = 0;
+	ortho.m[2][0] = 0;
+	ortho.m[2][1] = 0;
+	ortho.m[2][2] = 1.0f / farClip - nearClip;
+	ortho.m[2][3] = 0;
+	ortho.m[3][0] = (left + right) / (left - right);
+	ortho.m[3][1] = (top + bottom) / (bottom - top);
+	ortho.m[3][2] = nearClip / (nearClip - farClip);
+	ortho.m[3][3] = 1;
+
+	return ortho;
+}
+Matrix4x4 MakeViewportMatrix(
+    float left, float top, float width, float height, float minDepth, float maxDepth) {
+	Matrix4x4 view;
+	view.m[0][0] = width / 2;
+	view.m[0][1] = 0;
+	view.m[0][2] = 0;
+	view.m[0][3] = 0;
+	view.m[1][0] = 0;
+	view.m[1][1] = -height / 2.0f;
+	view.m[1][2] = 0;
+	view.m[1][3] = 0;
+	view.m[2][0] = 0;
+	view.m[2][1] = 0;
+	view.m[2][2] = maxDepth - minDepth;
+	view.m[2][3] = 0;
+	view.m[3][0] = left + width / 2;
+	view.m[3][1] = top + height / 2;
+	view.m[3][2] = minDepth;
+	view.m[3][3] = 1;
+	return view;
+}
+Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip) {
+	Matrix4x4 Pers;
+	Pers.m[0][0] = (1 / aspectRatio) * (1 / tan(fovY / 2));
+	Pers.m[0][1] = 0;
+	Pers.m[0][2] = 0;
+	Pers.m[0][3] = 0;
+	Pers.m[1][0] = 0;
+	Pers.m[1][1] = 1 / tan(fovY / 2);
+	Pers.m[1][2] = 0;
+	Pers.m[1][3] = 0;
+	Pers.m[2][0] = 0;
+	Pers.m[2][1] = 0;
+	Pers.m[2][2] = farClip / (farClip - nearClip);
+	Pers.m[2][3] = 1;
+	Pers.m[3][0] = 0;
+	Pers.m[3][1] = 0;
+	Pers.m[3][2] = (-nearClip * farClip) / (farClip - nearClip);
+	Pers.m[3][3] = 0;
+	return Pers;
+}
+
 //ベクトルと行列の積
 Vector3 VecMatMultiply(Vector3 vector, Matrix4x4 matrix) {
 	Vector3 Multiply;

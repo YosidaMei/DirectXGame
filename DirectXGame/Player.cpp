@@ -10,14 +10,19 @@ void Player::Initialize(Model* model, uint32_t textureHandle,Vector3 pos) {
 	m_textureHandle_ = textureHandle;
 	worldTransform_.Initialize();
 	worldTransform_.translation_.z += pos.z;
+	viewProjection_.Initialize();
 	//シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
 	//3Dレティクルのワールドトランスフォーム初期化
 	worldTransform3DReticle_.Initialize();
 	//レティクルモデル
 	retiModel_ = Model::Create();
-	kariTextureHandle_ = TextureManager::Load("white1x1.png");
-
+	uint32_t textureReticle = TextureManager::Load("syoujun.png");
+	//スプライト生成
+	sprite2DReticle_ = Sprite::Create(
+	    textureReticle, Vector2(400,400),
+	    Vector4(1,1,1,1), Vector2(0.5, 0.5));
+	sprite2DReticle_->SetSize(Vector2(100, 100));
 }
 
 Player::~Player() {
@@ -26,6 +31,8 @@ Player::~Player() {
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
 	}
+	delete sprite2DReticle_;
+
 }
 
 void Player::Update() {
@@ -104,8 +111,25 @@ void Player::Update() {
 	offset = Normalize(offset);
 	offset = Scaler(kDistancePlayerTo3DReticle, offset);
 	//3dレティクルの座標を設定
-	worldTransform3DReticle_.translation_ = Add(worldTransform_.translation_, offset);
+	Vector3 wPos = GetWorldPosition();
+	worldTransform3DReticle_.translation_ = Add(wPos, offset);
 	worldTransform3DReticle_.UpdateMatrix();
+	
+	//3dレティクルのワールド座標から２ⅾレティクルのスクリーン座標を計算
+	Vector3 positionReticle = {
+	    worldTransform3DReticle_.matWorld_.m[3][0],
+		worldTransform3DReticle_.matWorld_.m[3][1],
+	    worldTransform3DReticle_.matWorld_.m[3][2]};
+	//ビューポート
+	Matrix4x4 matViewport =
+	    MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+	//ビュー行列とプロジェクション行列、ビューポート行列を合成
+	Matrix4x4 matViewProjectionViewport =
+	    Multiply(Multiply(viewProjection_.matView, viewProjection_.matProjection), matViewport);
+	//ワールドからスクリーン座標変換
+	positionReticle = Transform(positionReticle, matViewProjectionViewport);
+	//スプライトのレティクルに座標設定
+	sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
 }
 
 void Player::Rotate() {
@@ -127,7 +151,7 @@ void Player::Draw(ViewProjection& viewProjection) {
 	}
 
 	//3ⅾレティクルを描画
-	retiModel_->Draw(worldTransform3DReticle_, viewProjection, kariTextureHandle_);
+	//retiModel_->Draw(worldTransform3DReticle_, viewProjection, textureReticle);
 }
 
 void Player::Attack() { 
@@ -173,3 +197,6 @@ void Player::SetParent(const WorldTransform* parent) {
 	worldTransform_.parent_ = parent;
 }
 
+void Player::DrawUI() { 
+	sprite2DReticle_->Draw(); 
+}

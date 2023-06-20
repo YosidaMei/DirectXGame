@@ -37,10 +37,6 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_,playerPosition);
 	//敵キャラ
-	//enemy_ = new Enemy();
-	/*for (Enemy* enemy : enemys_) {
-		enemy->Initialize(model_);
-	}*/
 	
 	//天球
 	skydome_ = new Skydome();
@@ -59,7 +55,8 @@ void GameScene::Initialize() {
 	//自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
 
-
+	//レティクルのテクスチャ
+	TextureManager::Load("syoujun.png");
 }
 
 void GameScene::Update() { 
@@ -133,7 +130,6 @@ void GameScene::Draw() {
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
 	//2D
-	
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -172,6 +168,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	player_->DrawUI();
+	
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

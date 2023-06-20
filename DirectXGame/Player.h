@@ -7,6 +7,7 @@
 #include "PlayerBullet.h"
 #include <list>
 #include "MathFunction.h"
+#include "Sprite.h"
 
 class Player {
 public:
@@ -44,6 +45,11 @@ public:
 	/// </summary>
 	void SetParent(const WorldTransform* parent);
 
+	/// <summary>
+	/// UI描画
+	/// </summary>
+	void DrawUI();
+
 	// テクスチャハンドル
 	uint32_t m_textureHandle_ = 0u;
 
@@ -54,6 +60,7 @@ public:
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;
+	ViewProjection viewProjection_;
 
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
@@ -68,7 +75,9 @@ public:
 
 	//モデル
 	Model* retiModel_ = nullptr;
-	uint32_t kariTextureHandle_ = 0u;
+
+	//2dレティクル用スプライト
+	Sprite* sprite2DReticle_ = nullptr;
 
 	private:
 	//弾
