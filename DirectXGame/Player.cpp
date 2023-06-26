@@ -151,9 +151,6 @@ void Player::Draw(ViewProjection& viewProjection) {
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
-
-	//3ⅾレティクルを描画
-	//retiModel_->Draw(worldTransform3DReticle_, viewProjection, textureReticle);
 }
 
 void Player::Attack() { 
@@ -233,6 +230,7 @@ void Player::ReticleMouse() {
 	Vector3 mulK2D = Scaler(kDistanceTestObject, mouseDirection);
 	worldTransform3DReticle_.translation_ = Add(posNear,mulK2D);
 	worldTransform3DReticle_.UpdateMatrix();
+
 	ImGui::Begin("Player");
 	ImGui::Text("2dReticle:(%d,%d)", mousePosition.x, mousePosition.y);
 	ImGui::Text("Near:(%+.2f,%+.2f,%+.2f)", posNear.x, posNear.y,posNear.z);
