@@ -50,6 +50,11 @@ public:
 	/// </summary>
 	void DrawUI();
 
+	/// <summary>
+	/// マウスでレティクル動かす
+	/// </summary>
+	void ReticleMouse();
+
 	// テクスチャハンドル
 	uint32_t m_textureHandle_ = 0u;
 

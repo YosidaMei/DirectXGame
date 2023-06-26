@@ -100,36 +100,38 @@ void Player::Update() {
 		return false;
 	});
 
-	//自機のワールド座標から3Dレティクルのワールド座標を計算
-	//自機から3Dレティクルの距離
-	const float kDistancePlayerTo3DReticle = 20.0f;
-	//自機から3dレティクルへのオフセット
-	Vector3 offset = {0, 0, 1.0f};
-	//自機のワールド行列の回転を反映
-	offset = VecMatMultiply(offset, worldTransform_.matWorld_);
-	//ベクトルの長さを整える
-	offset = Normalize(offset);
-	offset = Scaler(kDistancePlayerTo3DReticle, offset);
-	//3dレティクルの座標を設定
-	Vector3 wPos = GetWorldPosition();
-	worldTransform3DReticle_.translation_ = Add(wPos, offset);
-	worldTransform3DReticle_.UpdateMatrix();
-	
-	//3dレティクルのワールド座標から２ⅾレティクルのスクリーン座標を計算
-	Vector3 positionReticle = {
-	    worldTransform3DReticle_.matWorld_.m[3][0],
-		worldTransform3DReticle_.matWorld_.m[3][1],
-	    worldTransform3DReticle_.matWorld_.m[3][2]};
-	//ビューポート
-	Matrix4x4 matViewport =
-	    MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
-	//ビュー行列とプロジェクション行列、ビューポート行列を合成
-	Matrix4x4 matViewProjectionViewport =
-	    Multiply(Multiply(viewProjection_.matView, viewProjection_.matProjection), matViewport);
-	//ワールドからスクリーン座標変換
-	positionReticle = Transform(positionReticle, matViewProjectionViewport);
-	//スプライトのレティクルに座標設定
-	sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
+
+	////自機のワールド座標から3Dレティクルのワールド座標を計算
+	////自機から3Dレティクルの距離
+	//const float kDistancePlayerTo3DReticle = 20.0f;
+	////自機から3dレティクルへのオフセット
+	//Vector3 offset = {0, 0, 1.0f};
+	////自機のワールド行列の回転を反映
+	//offset = VecMatMultiply(offset, worldTransform_.matWorld_);
+	////ベクトルの長さを整える
+	//offset = Normalize(offset);
+	//offset = Scaler(kDistancePlayerTo3DReticle, offset);
+	////3dレティクルの座標を設定
+	//Vector3 wPos = GetWorldPosition();
+	//worldTransform3DReticle_.translation_ = Add(wPos, offset);
+	//worldTransform3DReticle_.UpdateMatrix();
+	////3dレティクルのワールド座標から２ⅾレティクルのスクリーン座標を計算
+	//Vector3 positionReticle = {
+	//    worldTransform3DReticle_.matWorld_.m[3][0],
+	//	worldTransform3DReticle_.matWorld_.m[3][1],
+	//    worldTransform3DReticle_.matWorld_.m[3][2]};
+	////ビューポート
+	//Matrix4x4 matViewport =
+	//    MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+	////ビュー行列とプロジェクション行列、ビューポート行列を合成
+	//Matrix4x4 matViewProjectionViewport =
+	//    Multiply(Multiply(viewProjection_.matView, viewProjection_.matProjection), matViewport);
+	////ワールドからスクリーン座標変換
+	//positionReticle = Transform(positionReticle, matViewProjectionViewport);
+	////スプライトのレティクルに座標設定
+	//sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
+
+	ReticleMouse();
 }
 
 void Player::Rotate() {
@@ -199,4 +201,44 @@ void Player::SetParent(const WorldTransform* parent) {
 
 void Player::DrawUI() { 
 	sprite2DReticle_->Draw(); 
+}
+
+void Player::ReticleMouse() { 
+	POINT mousePosition; 
+	//マウス座標を取得(スクリーン)
+	GetCursorPos(&mousePosition);
+	//クライアントエリア座標に変換する(スクリーン座標)
+	HWND hwnd = WinApp::GetInstance()->GetHwnd();
+	ScreenToClient(hwnd, &mousePosition);
+	//マウス座標を２ⅾレティクルのスプライトに代入
+	sprite2DReticle_->SetPosition(Vector2(mousePosition.x, mousePosition.y));
+	// ビューポート
+	Matrix4x4 matViewport =
+	    MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+	//ビュープロジェクションビューポート合成行列
+	Matrix4x4 matVPV = Multiply(Multiply(viewProjection_.matView, viewProjection_.matProjection), matViewport);
+	//合成行列の逆行列を計算する
+	Matrix4x4 matInverseVPV = Inverse(matVPV);
+	//スクリーン座標
+	Vector3 posNear = Vector3(mousePosition.x, mousePosition.y, 0);
+	Vector3 posFar = Vector3(mousePosition.x, mousePosition.y, 1);
+	//スクリーン座標からワールド座標へ
+	posNear = Transform(posNear, matInverseVPV);
+	posFar = Transform(posFar, matInverseVPV);
+	//マウスレイの方向
+	Vector3 mouseDirection = Subtract(posFar, posNear);
+	mouseDirection = Normalize(mouseDirection);
+	//カメラから照準オブジェクトの距離
+	const float kDistanceTestObject = 5;
+	Vector3 mulK2D = Scaler(kDistanceTestObject, mouseDirection);
+	worldTransform3DReticle_.translation_ = Add(posNear,mulK2D);
+	worldTransform3DReticle_.UpdateMatrix();
+	ImGui::Begin("Player");
+	ImGui::Text("2dReticle:(%d,%d)", mousePosition.x, mousePosition.y);
+	ImGui::Text("Near:(%+.2f,%+.2f,%+.2f)", posNear.x, posNear.y,posNear.z);
+	ImGui::Text("Far:(%+.2f,%+.2f,%+.2f)", posFar.x, posFar.y,posFar.z);
+	ImGui::Text(
+	    "3dReticle:(%+.2f,%+.2f,%+.2f)", worldTransform3DReticle_.translation_.x,
+	    worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);	
+	ImGui::End();
 }
