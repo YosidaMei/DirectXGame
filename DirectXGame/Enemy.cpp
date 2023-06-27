@@ -20,18 +20,11 @@ void Enemy::Initialize(Model* model, Vector3 position) {
 }
 
 Enemy::~Enemy() {
-	/*for (EnemyBullet* bullet : bullets_) {
-		delete bullet;
-	}*/
+	
 }
 
 
 void Enemy::Update(){
-
-
-	/*for (EnemyBullet* bullet : bullets_) {
-		bullet->Update();
-	}*/
 
 	// キャラの速さ
 	const float kCharaSpeed = 0.05f;

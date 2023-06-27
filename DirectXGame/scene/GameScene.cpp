@@ -84,7 +84,6 @@ void GameScene::Update() {
 		}
 	}
 	
-
 	if (isDebugCameraActive_) {
 		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
