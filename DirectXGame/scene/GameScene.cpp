@@ -67,7 +67,7 @@ void GameScene::Update() {
 	for (Enemy* enemy : enemys_) {
 		enemy->SetPlayer(player_);
 	}
-	UpdateEnemyPopCommands();
+	//UpdateEnemyPopCommands();
 	for (Enemy* enemy : enemys_) {
 		enemy->Update();
 	}

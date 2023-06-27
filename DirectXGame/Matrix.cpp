@@ -417,7 +417,7 @@ Vector3 VecMatMultiply(Vector3 vector, Matrix4x4 matrix) {
 }
 
 // スカラー倍
-Vector3 Scaler(float scalar, Vector3& v2) {
+Vector3 Scaler(float scalar, const Vector3& v2) {
 	Vector3 Multiply;
 	Multiply.x = scalar * v2.x;
 	Multiply.y = scalar * v2.y;
@@ -426,7 +426,7 @@ Vector3 Scaler(float scalar, Vector3& v2) {
 }
 
 // 1.行列の加法
-Vector3 Add(Vector3& v1, Vector3& v2) {
+Vector3 Add(const Vector3& v1, const Vector3& v2) {
 	Vector3 Add;
 	Add.x = v1.x + v2.x;
 	Add.y = v1.y + v2.y;
@@ -435,7 +435,7 @@ Vector3 Add(Vector3& v1, Vector3& v2) {
 }
 
 // 2.減法
-Vector3 Subtract(Vector3& v1, Vector3& v2) {
+Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
 	Vector3 Subtract;
 	Subtract.x = v1.x - v2.x;
 	Subtract.y = v1.y - v2.y;
