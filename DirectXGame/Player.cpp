@@ -235,7 +235,8 @@ void Player::ReticleMouse() {
 	//Vector3 mulK2D = Scaler(kDistanceTestObject, mouseDirection);
 	//worldTransform3DReticle_.translation_ = Add(posNear, mulK2D);
 	//worldTransform3DReticle_.UpdateMatrix();
-
+	Matrix4x4 a;
+	Matrix4x4 b;
 	POINT mousePosition; 
 	//マウス座標を取得(スクリーン)
 	GetCursorPos(&mousePosition);
@@ -251,6 +252,8 @@ void Player::ReticleMouse() {
 	Matrix4x4 matVPV = Multiply(Multiply(viewProjection_.matView, viewProjection_.matProjection), matViewport);
 	//合成行列の逆行列を計算する
 	Matrix4x4 matInverseVPV = Inverse(matVPV);
+	a = Inverse(matVPV);
+	b = Multiply(a, matVPV);
 	//スクリーン座標
 	Vector3 posNear = Vector3(mousePosition.x, mousePosition.y, 0);
 	Vector3 posFar = Vector3(mousePosition.x, mousePosition.y, 1);
