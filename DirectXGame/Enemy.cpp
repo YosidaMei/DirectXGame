@@ -20,7 +20,7 @@ void Enemy::Initialize(Model* model, Vector3 position) {
 }
 
 Enemy::~Enemy() {
-	
+
 }
 
 
@@ -116,4 +116,6 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
-void Enemy::OnConllision() {}
+void Enemy::OnConllision() {
+
+}

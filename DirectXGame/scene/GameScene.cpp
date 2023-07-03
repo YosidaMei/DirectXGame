@@ -220,10 +220,9 @@ void GameScene::CheckAllCollisions() {
 			               ((posB.z - posA.z) * (posB.z - posA.z));
 			// 球と球の交差判定
 			if (length <=
-			    (player_->radius_ + bullet->radius_) * (player_->radius_ + bullet->radius_)) {
-				// 自キャラの衝突時
-				player_->OnConllision();
+			    (enemy->radius_ + bullet->radius_) * (enemy->radius_ + bullet->radius_)) {
 				// 敵弾の衝突時
+				enemy->OnConllision();
 				bullet->OnConllision();
 			}
 		}
