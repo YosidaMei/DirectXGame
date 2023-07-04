@@ -60,7 +60,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() { 
-	player_->Update();
+	player_->Update(viewProjection_);
 	debugCamera_->Update();
 	LoadEnemyPopData();
 	//敵キャラに自キャラのアドレスを渡す
@@ -95,8 +95,6 @@ void GameScene::Update() {
 		viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
 		viewProjection_.TransferMatrix();
 	}
-
-	player_->Rotate();
 
 	CheckAllCollisions();
 
@@ -221,8 +219,9 @@ void GameScene::CheckAllCollisions() {
 			// 球と球の交差判定
 			if (length <=
 			    (enemy->radius_ + bullet->radius_) * (enemy->radius_ + bullet->radius_)) {
-				// 敵弾の衝突時
+				// 敵の衝突時
 				enemy->OnConllision();
+				//弾の衝突時
 				bullet->OnConllision();
 			}
 		}

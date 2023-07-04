@@ -10,7 +10,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle,Vector3 pos) {
 	m_textureHandle_ = textureHandle;
 	worldTransform_.Initialize();
 	worldTransform_.translation_.z += pos.z;
-	viewProjection_.Initialize();
+	//viewProjection_.Initialize();
 	//シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
 	//3Dレティクルのワールドトランスフォーム初期化
@@ -27,7 +27,6 @@ void Player::Initialize(Model* model, uint32_t textureHandle,Vector3 pos) {
 
 Player::~Player() {
 
-	//delete bullet_;
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
 	}
@@ -35,7 +34,7 @@ Player::~Player() {
 
 }
 
-void Player::Update() {
+void Player::Update(ViewProjection& viewProjection) {
 
 	//キャラの移動ベクトル
 	Vector3 move = {0, 0, 0};
@@ -107,9 +106,9 @@ void Player::Update() {
 		return false;
 	});
 
-	ReticleMouse();
+	ReticleMouse(viewProjection);
 
-	
+	Rotate();
 
 }
 
@@ -199,7 +198,7 @@ void Player::DrawUI() {
 	sprite2DReticle_->Draw(); 
 }
 
-void Player::ReticleMouse() { 
+void Player::ReticleMouse(ViewProjection& viewProjection) { 
 
 	//Vector2 spritePosition = sprite2DReticle_->GetPosition();
 	//////ゲームパッドの状態を得る変数
@@ -249,7 +248,9 @@ void Player::ReticleMouse() {
 	Matrix4x4 matViewport =
 	    MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
 	//ビュープロジェクションビューポート合成行列
-	Matrix4x4 matVPV = Multiply(Multiply(viewProjection_.matView, viewProjection_.matProjection), matViewport);
+	//ビュープロジェクションをゲームシーンのビュープロジェクション使う
+	Matrix4x4 matVPV = Multiply(Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
+
 	//合成行列の逆行列を計算する
 	Matrix4x4 matInverseVPV = Inverse(matVPV);
 	a = Inverse(matVPV);

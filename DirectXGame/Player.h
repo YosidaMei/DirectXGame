@@ -19,7 +19,7 @@ public:
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	void Update(ViewProjection& viewProjection);
 	void Rotate();
 
 	/// <summary>
@@ -53,7 +53,7 @@ public:
 	/// <summary>
 	/// マウスでレティクル動かす
 	/// </summary>
-	void ReticleMouse();
+	void ReticleMouse(ViewProjection& viewProjection);
 
 	// テクスチャハンドル
 	uint32_t m_textureHandle_ = 0u;
@@ -65,7 +65,7 @@ public:
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;
-	ViewProjection viewProjection_;
+	//ViewProjection viewProjection_;
 
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
