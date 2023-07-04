@@ -83,13 +83,6 @@ void Player::Update(ViewProjection& viewProjection) {
 
 	worldTransform_.UpdateMatrix();
 
-	//キャラクター攻撃
-	Attack();
-	//弾更新
-	for (PlayerBullet* bullet : bullets_) {
-		bullet->Update();
-	}
-
 	//デバッグ
 	ImGui::Begin("PlayerDebug");
 	ImGui::Text(
@@ -107,6 +100,13 @@ void Player::Update(ViewProjection& viewProjection) {
 	});
 
 	ReticleMouse(viewProjection);
+	//キャラクター攻撃
+	Attack();
+	//弾更新
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Update();
+	}
+
 
 	Rotate();
 
@@ -265,7 +265,7 @@ void Player::ReticleMouse(ViewProjection& viewProjection) {
 	Vector3 mouseDirection = Subtract(posFar, posNear);
 	mouseDirection = Normalize(mouseDirection);
 	//カメラから照準オブジェクトの距離
-	const float kDistanceTestObject = 120;
+	const float kDistanceTestObject = 40;
 	Vector3 mulK2D = Scaler(kDistanceTestObject, mouseDirection);
 	worldTransform3DReticle_.translation_ = Add(posNear,mulK2D);
 	worldTransform3DReticle_.UpdateMatrix();

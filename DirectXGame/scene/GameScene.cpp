@@ -60,6 +60,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() { 
+	railCamera_->Update();
 	player_->Update(viewProjection_);
 	debugCamera_->Update();
 	LoadEnemyPopData();
@@ -72,7 +73,6 @@ void GameScene::Update() {
 		enemy->Update();
 	}
 	skydome_->Update();
-	railCamera_->Update();
 #ifdef DEBUG
 #endif // DEBUG
 	//F押すとデバッグカメラ
@@ -90,13 +90,11 @@ void GameScene::Update() {
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 		viewProjection_.TransferMatrix();
 	} else {
-		viewProjection_.UpdateMatrix();
 		viewProjection_.matView = railCamera_->GetViewProjection().matView;
 		viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
 		viewProjection_.TransferMatrix();
 	}
 
-	CheckAllCollisions();
 
 	//敵の弾
 	for (EnemyBullet* bullet : enemyBullets_) {
@@ -111,6 +109,7 @@ void GameScene::Update() {
 		return false;
 	});
 
+	CheckAllCollisions();
 }
 
 

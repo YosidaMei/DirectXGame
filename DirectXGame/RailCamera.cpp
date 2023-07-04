@@ -56,8 +56,8 @@ void RailCamera::Update() {
 	//	worldTransform_.rotation_.y += kRotSpeed;
 	//}
 
-	worldTransform_.rotation_.y += 0.005f;
-	//worldTransform_.translation_.z -= 0.005f;
+	//worldTransform_.rotation_.y += 0.005f;
+	worldTransform_.translation_.z -= 0.005f;
 
 	//ワールド行列再計算
 	worldTransform_.UpdateMatrix();
