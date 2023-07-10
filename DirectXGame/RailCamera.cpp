@@ -56,8 +56,16 @@ void RailCamera::Update() {
 	//	worldTransform_.rotation_.y += kRotSpeed;
 	//}
 
-	//worldTransform_.rotation_.y += 0.005f;
-	worldTransform_.translation_.z -= 0.005f;
+	//カメラ移動
+	const float rotationSpeed = 0.005f;
+	// 押した方向で移動ベクトルを変更(左右)
+	if (input_->PushKey(DIK_LEFT)) {
+		worldTransform_.rotation_.y -= rotationSpeed;
+
+	} else if (input_->PushKey(DIK_RIGHT)) {
+		worldTransform_.rotation_.y += rotationSpeed;
+	}
+	
 
 	//ワールド行列再計算
 	worldTransform_.UpdateMatrix();

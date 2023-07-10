@@ -39,7 +39,7 @@ void Player::Update(ViewProjection& viewProjection) {
 	//キャラの移動ベクトル
 	Vector3 move = {0, 0, 0};
 	//キャラの速さ
-	const float kCharaSpeed = 0.2f;
+	const float kCharaSpeed = 0.0f;
 	//押した方向で移動ベクトルを変更(左右)
 	if (input_->PushKey(DIK_LEFT)) {
 		move.x -= kCharaSpeed;

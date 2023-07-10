@@ -73,7 +73,7 @@ void Enemy::Fire() {
 	assert(player_);
 
 	// 弾の速度
-	const float kBulletSpeed = 0.5f;
+	const float kBulletSpeed = 0.25f;
 	
 	Vector3 player_worldPos = player_->GetWorldPosition();
 	Vector3 enemy_worldPos = GetWorldPosition();
