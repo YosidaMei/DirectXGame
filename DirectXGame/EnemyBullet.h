@@ -17,7 +17,7 @@ public:
 
 	Vector3 GetWorldPosition();
 
-	const float radius_ = 2;
+	const float radius_ = 0.5f;
 
 	private:
 	Model* model_ = nullptr;

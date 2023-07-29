@@ -9,64 +9,77 @@ void Enemy::Initialize(Model* model, Vector3 position) {
 	assert(model);
 	// モデル
 	model_ = model;
-	m_textureHandle_ = TextureManager::Load("AL3wadoru.png");
+	//m_textureHandle_ = TextureManager::Load("AL3wadoru.png");
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
-	
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
-
 	approachInitialize();
+	
 }
 
 Enemy::~Enemy() {
-
+	
 }
 
 
 void Enemy::Update(){
 
-	// キャラの速さ
-	const float kCharaSpeed = 0.05f;
-	const float kLeaveSpeed = 0.2f;
-
-
-	//行動切り替え
-	switch (phase_) {
-	case Phase::Approach:
-	default:
-		//移動
-		worldTransform_.translation_.z -= kCharaSpeed;
-		//既定の位置に到達したら離脱
-		if (worldTransform_.translation_.z < -100.0f) {
-			phase_ = Phase::Leave;
-		}
-
-		//発射
-		fireTimer--;
-		if (fireTimer <= 0) {
-			Fire();
-			fireTimer = kFireInterval;
-		}
-
-		break;
-	case Phase::Leave:
-		//移動
-		worldTransform_.translation_.x -= kLeaveSpeed;
-		worldTransform_.translation_.y += kLeaveSpeed;
-
-		break;
+	if (isPlayer) {
+		//worldTransform_.translation_.z -= 1;
+		/*Matrix4x4 keepRotate = worldTransform_.matWorld_;
+		worldTransform_.matWorld_ = Add(player_->worldTransform_.matWorld_, keepRotate);*/
 	}
+	else {
+
+		// キャラの速さ
+		const float kCharaSpeed = 0.05f;
+		const float kLeaveSpeed = 0.2f;
+
+		// 行動切り替え
+		switch (phase_) {
+		case Phase::Approach:
+		default:
+			// 移動
+			worldTransform_.translation_.z -= kCharaSpeed;
+			// 既定の位置に到達したら離脱
+			if (worldTransform_.translation_.z < -80.0f) {
+				phase_ = Phase::Leave;
+			}
+
+			if (worldTransform_.translation_.z < 12.5f) {
+			} else {
+				// 発射
+				fireTimer--;
+				if (fireTimer <= 0) {
+					Fire();
+					fireTimer = kFireInterval;
+				}
+			}
+			
+			break;
+		case Phase::Leave:
+			// 移動
+			worldTransform_.translation_.x -= kLeaveSpeed;
+			worldTransform_.translation_.y += kLeaveSpeed;
+
+			break;
+		}
+
+	}
+
 	worldTransform_.UpdateMatrix();
+
+	//プレイヤーに当たった時にくっつける
+	//プレイヤーと親子関係を結ぶ
+	//くっついた際にプレイヤーと同じ向きに向くので、対策として敵の回転（rotation）を新しく作った回転行列に記録しプレイヤーの回転と足す
 
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) {
 
-	model_->Draw(worldTransform_, viewProjection, m_textureHandle_);
-	/*for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw(viewProjection);
-	}*/
+	model_->Draw(worldTransform_, viewProjection);
+	
 }
 
 void Enemy::Fire() {
@@ -116,6 +129,11 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
-void Enemy::OnConllision() {
+void Enemy::OnConllision() { 
+	// デスフラグ
+	isDead_ = true;
+}
 
+void Enemy::SetParent(const WorldTransform* parent) { 
+	worldTransform_.parent_ = parent;
 }

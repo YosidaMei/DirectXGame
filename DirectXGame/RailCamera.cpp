@@ -57,13 +57,22 @@ void RailCamera::Update() {
 	//}
 
 	//カメラ移動
-	const float rotationSpeed = 0.005f;
+	const float rotationSpeed = 0.01f;
 	// 押した方向で移動ベクトルを変更(左右)
 	if (input_->PushKey(DIK_LEFT)) {
 		worldTransform_.rotation_.y -= rotationSpeed;
-
 	} else if (input_->PushKey(DIK_RIGHT)) {
 		worldTransform_.rotation_.y += rotationSpeed;
+	}
+
+	// キャラの速さ
+	const float kCharaSpeed = 0.01f;
+	// ゲームパッドの状態を得る変数
+	XINPUT_STATE joyState;
+	// ジョイスティック状態獲得
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		// move.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharaSpeed;
+		worldTransform_.rotation_.y += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharaSpeed;
 	}
 	
 
@@ -73,12 +82,12 @@ void RailCamera::Update() {
 	//ワールド行列からビュー行列へ
 	viewProjection_.matView = Inverse(worldTransform_.matWorld_);
 
-	//** デバッグカメラ **//
-	ImGui::Begin("Camera");
-	//ImGui::InputFloat3("railCamera", )
-	ImGui::Text(
-	    "RailCamera PR : %f %f %f %f %f %f",
-		worldTransform_.translation_.x,worldTransform_.translation_.y, worldTransform_.translation_.z,
-		worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z);
-	ImGui::End();
+	////** デバッグカメラ **//
+	//ImGui::Begin("Camera");
+	////ImGui::InputFloat3("railCamera", )
+	//ImGui::Text(
+	//    "RailCamera PR : %f %f %f %f %f %f",
+	//	worldTransform_.translation_.x,worldTransform_.translation_.y, worldTransform_.translation_.z,
+	//	worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z);
+	//ImGui::End();
 }

@@ -1,6 +1,51 @@
 #include "Matrix.h"
 #include <assert.h>
 
+// â¡éZ
+Matrix4x4 Add(Matrix4x4 matrix1, Matrix4x4 matrix2) {
+	Matrix4x4 Add;
+	Add.m[0][0] = matrix1.m[0][0] + matrix2.m[0][0];
+	Add.m[0][1] = matrix1.m[0][1] + matrix2.m[0][1];
+	Add.m[0][2] = matrix1.m[0][2] + matrix2.m[0][2];
+	Add.m[0][3] = matrix1.m[0][3] + matrix2.m[0][3];
+	Add.m[1][0] = matrix1.m[1][0] + matrix2.m[1][0];
+	Add.m[1][1] = matrix1.m[1][1] + matrix2.m[1][1];
+	Add.m[1][2] = matrix1.m[1][2] + matrix2.m[1][2];
+	Add.m[1][3] = matrix1.m[1][3] + matrix2.m[1][3];
+	Add.m[2][0] = matrix1.m[2][0] + matrix2.m[2][0];
+	Add.m[2][1] = matrix1.m[2][1] + matrix2.m[2][1];
+	Add.m[2][2] = matrix1.m[2][2] + matrix2.m[2][2];
+	Add.m[2][3] = matrix1.m[2][3] + matrix2.m[2][3];
+	Add.m[3][0] = matrix1.m[3][0] + matrix2.m[3][0];
+	Add.m[3][1] = matrix1.m[3][1] + matrix2.m[3][1];
+	Add.m[3][2] = matrix1.m[3][2] + matrix2.m[3][2];
+	Add.m[3][3] = matrix1.m[3][3] + matrix2.m[3][3];
+	return Add;
+}
+
+// å∏éZ
+Matrix4x4 Subtract(Matrix4x4 matrix1, Matrix4x4 matrix2) {
+	Matrix4x4 Subtract;
+	Subtract.m[0][0] = matrix1.m[0][0] - matrix2.m[0][0];
+	Subtract.m[0][1] = matrix1.m[0][1] - matrix2.m[0][1];
+	Subtract.m[0][2] = matrix1.m[0][2] - matrix2.m[0][2];
+	Subtract.m[0][3] = matrix1.m[0][3] - matrix2.m[0][3];
+	Subtract.m[1][0] = matrix1.m[1][0] - matrix2.m[1][0];
+	Subtract.m[1][1] = matrix1.m[1][1] - matrix2.m[1][1];
+	Subtract.m[1][2] = matrix1.m[1][2] - matrix2.m[1][2];
+	Subtract.m[1][3] = matrix1.m[1][3] - matrix2.m[1][3];
+	Subtract.m[2][0] = matrix1.m[2][0] - matrix2.m[2][0];
+	Subtract.m[2][1] = matrix1.m[2][1] - matrix2.m[2][1];
+	Subtract.m[2][2] = matrix1.m[2][2] - matrix2.m[2][2];
+	Subtract.m[2][3] = matrix1.m[2][3] - matrix2.m[2][3];
+	Subtract.m[3][0] = matrix1.m[3][0] - matrix2.m[3][0];
+	Subtract.m[3][1] = matrix1.m[3][1] - matrix2.m[3][1];
+	Subtract.m[3][2] = matrix1.m[3][2] - matrix2.m[3][2];
+	Subtract.m[3][3] = matrix1.m[3][3] - matrix2.m[3][3];
+
+	return Subtract;
+}
+
 // ÇQéüå≥ÉxÉNÉgÉãÇìØéüç¿ïWÇ…ïœä∑
 Vector3 Transform(Vector3 vector, Matrix4x4 matrix) {
 	Vector3 result;

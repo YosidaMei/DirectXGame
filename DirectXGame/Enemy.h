@@ -44,8 +44,15 @@ public:
 	// 衝突を検知したら呼び出される関数
 	void OnConllision();
 
+	/// <summary>
+	/// 親となるワールドトランスフォームをセット
+	/// </summary>
+	void SetParent(const WorldTransform* parent);
+
+	bool IsDead() const { return isDead_; }
+
 	// テクスチャハンドル
-	uint32_t m_textureHandle_ = 0u;
+	//uint32_t m_textureHandle_ = 0u;
 
 	Model* model_ = nullptr;
 
@@ -59,7 +66,7 @@ public:
 	Phase phase_ = Phase::Approach;
 
 	//発射感覚
-	static const int kFireInterval = 100;
+	static const int kFireInterval = 180;
 	//発射タイマー
 	int32_t fireTimer = 0;
 
@@ -69,7 +76,10 @@ public:
 	Player* player_ = nullptr;
 	void SetPlayer(Player* player) { player_ = player; }
 
-	const float radius_ = 2;
+	float radius_ = 0.5f;
+
+	//プレイヤーとくっついてるか
+	bool isPlayer = false;
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
@@ -80,6 +90,9 @@ public:
 	//ゲームシーン
 	GameScene* gameScene_ = nullptr;
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
+
+	// デスフラグ
+	bool isDead_ = false;
 
 	private:
 	std::list<EnemyBullet*> enemyBullets_;

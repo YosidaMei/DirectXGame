@@ -20,3 +20,5 @@ Vector3 Scaler(float scalar, const Vector3& v);
 Vector3 VecMatMultiply(Vector3 vector, Matrix4x4 matrix);
 Vector3 Subtract(const Vector3& v1, const Vector3& v2);
 Vector3 Add(const Vector3& v1, const Vector3& v2);
+Matrix4x4 Add(Matrix4x4 matrix1, Matrix4x4 matrix2);
+Matrix4x4 Subtract(Matrix4x4 matrix1, Matrix4x4 matrix2);

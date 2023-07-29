@@ -16,6 +16,8 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete skydome_;
 	delete modelSkydome_;
+	delete modelPlayer_;
+	delete modelEnemy_;
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
 	}
@@ -35,9 +37,10 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	Vector3 playerPosition(0, 0, 15);//前にずらす量
 	player_ = new Player();
-	player_->Initialize(model_, textureHandle_,playerPosition);
+	modelPlayer_ = Model::CreateFromOBJ("player", true);
+	player_->Initialize(modelPlayer_,playerPosition);
 	//敵キャラ
-	
+	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
 	//天球
 	skydome_ = new Skydome();
 	modelSkydome_ = Model::CreateFromOBJ("tenkyuu", true);
@@ -57,13 +60,24 @@ void GameScene::Initialize() {
 
 	//レティクルのテクスチャ
 	TextureManager::Load("syoujun.png");
+	// hpのテクスチャ
+	TextureManager::Load("hp_wahuu.png");
+	// 画像
+	TextureManager::Load("susi_ui_gameClear.png");
+	TextureManager::Load("susi_ui_gameOver.png");
+	TextureManager::Load("ui_number.png");
+	TextureManager::Load("ui_sousa.png");
+	TextureManager::Load("susi_ui_tuto.png");
+	TextureManager::Load("ui_nokori.png");
+	
+	LoadEnemyPopData();
 }
 
 void GameScene::Update() { 
 	railCamera_->Update();
 	player_->Update(viewProjection_);
 	debugCamera_->Update();
-	LoadEnemyPopData();
+
 	//敵キャラに自キャラのアドレスを渡す
 	for (Enemy* enemy : enemys_) {
 		enemy->SetPlayer(player_);
@@ -76,13 +90,13 @@ void GameScene::Update() {
 #ifdef DEBUG
 #endif // DEBUG
 	//F押すとデバッグカメラ
-	if (input_->TriggerKey(DIK_F)) {
+	/*if (input_->TriggerKey(DIK_F)) {
 		if (isDebugCameraActive_ != true) {
 			isDebugCameraActive_ = true;
 		} else {
 			isDebugCameraActive_ = false;
 		}
-	}
+	}*/
 	
 	if (isDebugCameraActive_) {
 		debugCamera_->Update();
@@ -110,6 +124,26 @@ void GameScene::Update() {
 	});
 
 	CheckAllCollisions();
+
+	//敵のHPが０になったら
+	//  デスフラグの立った敵を削除
+	enemys_.remove_if([](Enemy* enemy) {
+		if (enemy->IsDead() || enemy->worldTransform_.translation_.z <= -100) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
+
+	//
+	enemys_.remove_if([](Enemy* enemy) {
+		if (enemy->worldTransform_.translation_.z<=-80) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
+	
 }
 
 
@@ -179,8 +213,39 @@ void GameScene::CheckAllCollisions() {
 	//自弾リストの取得
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
 	
+#pragma region 自キャラと敵の当たり判定
+	// 敵の座標
+	for (Enemy* enemy : enemys_) {
+		if (enemy->isPlayer == false) {
+			posB = enemy->GetWorldPosition();
+			posA = player_->GetWorldPosition();
+			float length = ((posB.x - posA.x) * (posB.x - posA.x)) +
+			               ((posB.y - posA.y) * (posB.y - posA.y)) +
+			               ((posB.z - posA.z) * (posB.z - posA.z));
+			// 球と球の交差判定
+			if (length <=
+			    (enemy->radius_ + player_->radius_) * (enemy->radius_ + player_->radius_)) {
+				// 敵の衝突時
+				// translateに敵のワールド座標*プレイヤーのワールド行列=プレイヤーから見た敵の座標をtranslateに入れる
+				Matrix4x4 inversePlayer = Inverse(player_->worldTransform_.matWorld_);
+				Vector3 p2e = Transform(enemy->worldTransform_.translation_, inversePlayer);
+				enemy->worldTransform_.translation_ = p2e;
+				enemy->SetParent(&player_->GetWorldTransform());
+				enemy->isPlayer = true;
+
+				// enemy->OnConllision();
+				//  弾の衝突時
+				player_->OnSusiConllision();
+			}
+		}
+	
+	}
+
+#pragma endregion
 
 #pragma region 自キャラと敵弾の当たり判定
+
+
 	posA = player_->GetWorldPosition();
 
 	//自キャラと敵弾すべての当たり判定
@@ -219,9 +284,11 @@ void GameScene::CheckAllCollisions() {
 			if (length <=
 			    (enemy->radius_ + bullet->radius_) * (enemy->radius_ + bullet->radius_)) {
 				// 敵の衝突時
-				enemy->OnConllision();
-				//弾の衝突時
-				bullet->OnConllision();
+				if (enemy->isPlayer) {} else {
+					enemy->OnConllision();
+					// 弾の衝突時
+					bullet->OnConllision();
+				}
 			}
 		}
 	}
@@ -308,7 +375,7 @@ void GameScene::UpdateEnemyPopCommands() {
 		//敵を発生させる
 			//  弾を生成初期化
 			Enemy* newEnemy = new Enemy();
-			newEnemy->Initialize(model_,Vector3(x,y,z));
+			newEnemy->Initialize(modelEnemy_,Vector3(x,y,z));
 			enemys_.push_back(newEnemy);
 			newEnemy->SetGameScene(this);
 		}

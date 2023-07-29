@@ -75,6 +75,8 @@ private: // メンバ変数
 	// 3Dモデル
 	Model* model_ = nullptr;
 	Model* modelSkydome_ = nullptr;
+	Model* modelPlayer_ = nullptr;
+	Model* modelEnemy_ = nullptr;
 	// ワールド、ビュー
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
